@@ -1,14 +1,16 @@
-import { useEffect } from 'react';
 import PropTypes from 'prop-types';
+import { useState,useEffect } from 'react';
 
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
-import Drawer from '@mui/material/Drawer';
+// import Drawer from '@mui/material/Drawer';
 import Button from '@mui/material/Button';
 import Avatar from '@mui/material/Avatar';
 import { alpha } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 import ListItemButton from '@mui/material/ListItemButton';
+import BottomNavigation from '@mui/material/BottomNavigation';
+import BottomNavigationAction from '@mui/material/BottomNavigationAction';
 
 import { usePathname } from 'src/routes/hooks';
 import { RouterLink } from 'src/routes/components';
@@ -27,8 +29,8 @@ import navConfig from './config-navigation';
 
 export default function Nav({ openNav, onCloseNav }) {
   const pathname = usePathname();
-
   const upLg = useResponsive('up', 'lg');
+  const [bottomNavValue, setBottomNavValue] = useState('');
 
   useEffect(() => {
     if (openNav) {
@@ -36,6 +38,11 @@ export default function Nav({ openNav, onCloseNav }) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
+
+  const handleBottomNavChange = (event, newValue) => {
+    setBottomNavValue(newValue);
+    // Handle navigation change
+  };
 
   const renderAccount = (
     <Box
@@ -122,6 +129,25 @@ export default function Nav({ openNav, onCloseNav }) {
     </Scrollbar>
   );
 
+  const renderBottomNav = (
+    <BottomNavigation
+      value={bottomNavValue}
+      onChange={handleBottomNavChange}
+      showLabels
+      sx={{ zIndex: 1200 }}
+    >
+      {navConfig.map((item) => (
+        <BottomNavigationAction
+          key={item.title}
+          component={RouterLink}
+          href={item.path}
+          label={item.title}
+          icon={item.icon}
+        />
+      ))}
+    </BottomNavigation>
+  );
+
   return (
     <Box
       sx={{
@@ -141,17 +167,32 @@ export default function Nav({ openNav, onCloseNav }) {
           {renderContent}
         </Box>
       ) : (
-        <Drawer
-          open={openNav}
-          onClose={onCloseNav}
-          PaperProps={{
-            sx: {
-              width: NAV.WIDTH,
-            },
-          }}
-        >
-          {renderContent}
-        </Drawer>
+        <>
+          {/* <Drawer
+            open={openNav}
+            onClose={onCloseNav}
+            PaperProps={{
+              sx: {
+                width: NAV.WIDTH,
+              },
+            }}
+          >
+            {renderContent}
+          </Drawer> */}
+          <Box
+            sx={{
+              display: { xs: 'block', lg: 'none' },
+              position: 'fixed',
+              bottom: 0,
+              width: '100%',
+              bgcolor: 'background.paper',
+              borderTop: (theme) => `1px solid ${theme.palette.divider}`,
+              zIndex: 1200,
+            }}
+          >
+            {renderBottomNav}
+          </Box>
+        </>
       )}
     </Box>
   );
