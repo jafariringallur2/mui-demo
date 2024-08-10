@@ -1,12 +1,13 @@
 import React from 'react';
 
-import CarouselComponent from '../CarouselComponent'; // Adjust the import path
+import Categories from '../categoreis'
+import CarouselComponent from '../CarouselComponent';
 
 export default function AppView() {
   return (
     <div>
       <CarouselComponent />
-      {/* Other components and content */}
+      <Categories />
     </div>
   );
 }

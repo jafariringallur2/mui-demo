@@ -8,63 +8,77 @@ import { Box, Button, Typography } from "@mui/material";
 import './view/app.css';
 
 const CarouselComponent = () => {
-    const settings = {
-        dots: true,
-        infinite: true,
-        speed: 500,
-        slidesToShow: 1,
-        slidesToScroll: 1,
-        fade: true,
-        autoplay: true,
-        autoplaySpeed: 3000,
-        arrows: false,
-        appendDots: (dots) => (
-          <Box
-            sx={{
-              position: "absolute",
-              bottom: "20px", // Position the dots 20px above the bottom of the image
-              display: "flex",
-              justifyContent: "center",
-              width: "100%",
-              zIndex: 1, // Ensure dots appear above the image
-            }}
-          >
-            <ul style={{ margin: "0px" }}> {dots} </ul>
-          </Box>
-        ),
-        customPaging: (i) => (
-          <Box
-            sx={{
-              width: "10px",
-              height: "10px",
-              borderRadius: "50%",
-              backgroundColor: "#fff",
-              opacity: 0.7,
-              transition: "opacity 0.3s",
-              "&:hover": {
-                opacity: 1,
-              },
-            }}
-          />
-        ),
-      };
-  
-    const slides = [
+  const settings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    autoplay: true,
+    autoplaySpeed: 3000,
+    arrows: false,
+    appendDots: (dots) => (
+      <Box
+        sx={{
+          position: "absolute",
+          bottom: "10px",
+          display: "flex",
+          justifyContent: "center",
+          width: "100%",
+        }}
+      >
+        <ul style={{ margin: "0px", padding: "0px", display: "flex" }}>
+          {dots}
+        </ul>
+      </Box>
+    ),
+    responsive: [
       {
-        image: "https://web.botire.in/botire/sliders/1_1688907404.png",
-        title: "Grab our products",
-        link: "#cat",
+        breakpoint: 768, // Tablet or mobile view
+        settings: {
+          slidesToShow: 1,
+          slidesToScroll: 1,
+        },
       },
       {
-        image: "https://web.botire.in/botire/sliders/1_1688911390.png",
-        title: "Shop online, anywhere",
-        link: "#cat",
+        breakpoint: 1200, // Desktop view
+        settings: {
+          slidesToShow: 2,
+          slidesToScroll: 1,
+        },
       },
-    ];
-  
-    return (
-      <section id="intro" style={{ position: "relative", overflow: "hidden" }}>
-        <Box sx={{ position: "relative", width: "100%", height: "100%" }}>
+    ],
+  };
+
+  const slides = [
+    {
+      image: "https://web.botire.in/botire/sliders/1_1688907404.png",
+      title: "Get Special Offer",
+      description: "All Services Available | T&C Applied",
+      offer: "Up to 40%",
+      link: "#cat",
+    },
+    {
+      image: "https://web.botire.in/botire/sliders/1_1688911390.png",
+      title: "Shop online, anywhere",
+      description: "All Services Available | T&C Applied",
+      offer: "Up to 40%",
+      link: "#cat",
+    },
+  ];
+
+  return (
+    <section id="intro" style={{ position: "relative", overflow: "hidden" }}>
+      <Box
+        sx={{
+          width: "100%",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          padding: "20px",
+        }}
+      >
+        <Box sx={{ width: "90%", maxWidth: "1200px" }}> {/* Adjust maxWidth for desktop */}
           <Slider {...settings}>
             {slides.map((slide, index) => (
               <Box
@@ -73,47 +87,91 @@ const CarouselComponent = () => {
                   backgroundImage: `url(${slide.image})`,
                   backgroundSize: "cover",
                   backgroundPosition: "center",
-                  height: "60vh",
+                  borderRadius: "16px",
+                  overflow: "hidden",
+                  position: "relative",
+                  padding: "20px",
+                  boxSizing: "border-box",
+                  height: "200px",
                 }}
               >
+                <Box
+                  sx={{
+                    position: "absolute",
+                    top: "10px",
+                    left: "10px",
+                    backgroundColor: "rgba(255, 255, 255, 0.7)",
+                    borderRadius: "10px",
+                    padding: "5px 10px",
+                  }}
+                >
+                  <Typography
+                    variant="overline"
+                    sx={{
+                      color: "#333",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    Limited time!
+                  </Typography>
+                </Box>
                 <Box
                   sx={{
                     display: "flex",
                     flexDirection: "column",
                     justifyContent: "center",
-                    alignItems: "center",
+                    alignItems: "flex-start",
                     height: "100%",
-                    backgroundColor: "rgba(0, 0, 0, 0.5)",
+                    color: "white",
                   }}
                 >
                   <Typography
-                    variant="h2"
+                    variant="h4"
                     sx={{
-                      color: "white",
-                      textAlign: "center",
-                      animation: "fadeInDown 1s",
+                      fontWeight: "bold",
+                      marginBottom: "10px",
                     }}
                   >
                     {slide.title}
+                  </Typography>
+                  <Typography
+                    variant="h3"
+                    sx={{
+                      color: "#d32f2f",
+                      fontWeight: "bold",
+                      marginBottom: "20px",
+                    }}
+                  >
+                    {slide.offer}
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      marginBottom: "20px",
+                    }}
+                  >
+                    {slide.description}
                   </Typography>
                   <Button
                     variant="contained"
                     href={slide.link}
                     sx={{
-                      mt: 2,
-                      backgroundColor: "var(--secondary-color)",
-                      animation: "fadeInUp 1s",
+                      backgroundColor: "#d32f2f",
+                      color: "#fff",
+                      borderRadius: "20px",
+                      padding: "5px 15px",
                     }}
                   >
-                    Shop Now
+                    Claim
                   </Button>
                 </Box>
               </Box>
             ))}
           </Slider>
         </Box>
-      </section>
-    );
-  };
-  
-  export default CarouselComponent;
+      </Box>
+    </section>
+  );
+};
+
+export default CarouselComponent;
