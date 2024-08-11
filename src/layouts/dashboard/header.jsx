@@ -1,23 +1,21 @@
 import PropTypes from 'prop-types';
 
 import Box from '@mui/material/Box';
+import Badge from '@mui/material/Badge';
 import Stack from '@mui/material/Stack';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import { useTheme } from '@mui/material/styles';
-// import IconButton from '@mui/material/IconButton';
+import IconButton from '@mui/material/IconButton';
 
 import { useResponsive } from 'src/hooks/use-responsive';
 
 import { bgBlur } from 'src/theme/css';
 
-// import Iconify from 'src/components/iconify';
+import Iconify from 'src/components/iconify';
 
+import { HEADER } from './config-layout';
 import Searchbar from './common/searchbar';
-import { NAV, HEADER } from './config-layout';
-import AccountPopover from './common/account-popover';
-import LanguagePopover from './common/language-popover';
-import NotificationsPopover from './common/notifications-popover';
 
 // ----------------------------------------------------------------------
 
@@ -25,26 +23,6 @@ export default function Header({ onOpenNav }) {
   const theme = useTheme();
 
   const lgUp = useResponsive('up', 'lg');
-
-  const renderContent = (
-    <>
-      {/* {!lgUp && (
-        <IconButton onClick={onOpenNav} sx={{ mr: 1 }}>
-          <Iconify icon="eva:menu-2-fill" />
-        </IconButton>
-      )} */}
-
-      <Searchbar />
-
-      <Box sx={{ flexGrow: 1 }} />
-
-      <Stack direction="row" alignItems="center" spacing={1}>
-        <LanguagePopover />
-        <NotificationsPopover />
-        <AccountPopover />
-      </Stack>
-    </>
-  );
 
   return (
     <AppBar
@@ -59,7 +37,6 @@ export default function Header({ onOpenNav }) {
           duration: theme.transitions.duration.shorter,
         }),
         ...(lgUp && {
-          width: `calc(100% - ${NAV.WIDTH + 1}px)`,
           height: HEADER.H_DESKTOP,
         }),
       }}
@@ -68,9 +45,25 @@ export default function Header({ onOpenNav }) {
         sx={{
           height: 1,
           px: { lg: 5 },
+          display: 'flex',
+          justifyContent: 'space-between', // Ensures logo is on the left and icons are on the right
         }}
       >
-        {renderContent}
+        <Box
+          component="img"
+          src="https://web.botire.in/kiswa-white-gallery/logo.png"
+          alt="Logo"
+          sx={{ height: {xs:"50px",sm:"60px"}}}
+        />
+  
+        <Stack direction="row" alignItems="center" spacing={1}>
+          <Searchbar />
+          <IconButton color="default">
+            <Badge badgeContent="12" color="error">
+              <Iconify width={24} icon="mdi:cart-outline" />
+            </Badge>
+          </IconButton>
+        </Stack>
       </Toolbar>
     </AppBar>
   );

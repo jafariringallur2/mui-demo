@@ -3,7 +3,7 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
-import { Box, Button, Typography } from "@mui/material";
+import { Box } from "@mui/material";
 
 import './view/app.css';
 
@@ -52,33 +52,26 @@ const CarouselComponent = () => {
 
   const slides = [
     {
-      image: "https://web.botire.in/botire/sliders/1_1688907404.png",
-      title: "Get Special Offer",
-      description: "All Services Available | T&C Applied",
-      offer: "Up to 40%",
+      image: "https://rukminim1.flixcart.com/fk-p-flap/1600/270/image/ce09ea52690d3695.jpeg",
       link: "#cat",
     },
     {
-      image: "https://web.botire.in/botire/sliders/1_1688911390.png",
-      title: "Shop online, anywhere",
-      description: "All Services Available | T&C Applied",
-      offer: "Up to 40%",
+      image: "https://rukminim1.flixcart.com/fk-p-flap/1600/270/image/f871c3dec2984ff3.jpeg",
       link: "#cat",
     },
   ];
 
   return (
-    <section id="intro" style={{ position: "relative", overflow: "hidden" }}>
       <Box
         sx={{
           width: "100%",
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          padding: "20px",
+          padding: {xs :"7px",sm : "1px"},
         }}
       >
-        <Box sx={{ width: "90%", maxWidth: "1200px" }}> {/* Adjust maxWidth for desktop */}
+        <Box sx={{ width:{ xs :"93%" , sm: "100%"}, maxWidth: "1200px" }}> {/* Adjust maxWidth for desktop */}
           <Slider {...settings}>
             {slides.map((slide, index) => (
               <Box
@@ -92,29 +85,10 @@ const CarouselComponent = () => {
                   position: "relative",
                   padding: "20px",
                   boxSizing: "border-box",
-                  height: "200px",
+                  height: {xs :"200px",sm:"300px"},
                 }}
               >
-                <Box
-                  sx={{
-                    position: "absolute",
-                    top: "10px",
-                    left: "10px",
-                    backgroundColor: "rgba(255, 255, 255, 0.7)",
-                    borderRadius: "10px",
-                    padding: "5px 10px",
-                  }}
-                >
-                  <Typography
-                    variant="overline"
-                    sx={{
-                      color: "#333",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    Limited time!
-                  </Typography>
-                </Box>
+               
                 <Box
                   sx={{
                     display: "flex",
@@ -125,34 +99,8 @@ const CarouselComponent = () => {
                     color: "white",
                   }}
                 >
-                  <Typography
-                    variant="h4"
-                    sx={{
-                      fontWeight: "bold",
-                      marginBottom: "10px",
-                    }}
-                  >
-                    {slide.title}
-                  </Typography>
-                  <Typography
-                    variant="h3"
-                    sx={{
-                      color: "#d32f2f",
-                      fontWeight: "bold",
-                      marginBottom: "20px",
-                    }}
-                  >
-                    {slide.offer}
-                  </Typography>
-                  <Typography
-                    variant="body2"
-                    sx={{
-                      marginBottom: "20px",
-                    }}
-                  >
-                    {slide.description}
-                  </Typography>
-                  <Button
+                 
+                  {/* <Button
                     variant="contained"
                     href={slide.link}
                     sx={{
@@ -163,14 +111,13 @@ const CarouselComponent = () => {
                     }}
                   >
                     Claim
-                  </Button>
+                  </Button> */}
                 </Box>
               </Box>
             ))}
           </Slider>
         </Box>
       </Box>
-    </section>
   );
 };
 
