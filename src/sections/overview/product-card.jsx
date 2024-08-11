@@ -12,9 +12,9 @@ export default function ProductCard({ product }) {
         {product.discount && (
           <Chip
             label={`${product.discount}% off`}
-            color="primary"
+            color="error"
             size="small"
-            sx={{ position: 'absolute', top: 8, left: 8 }}
+            sx={{ position: 'absolute', top: 8, left: 8,fontSize : {xs : "0.5rem",sm:"0.7rem"} }}
           />
         )}
         <Box sx={{ position: 'absolute', top: 8, right: 8 }}>
@@ -29,15 +29,15 @@ export default function ProductCard({ product }) {
           component="img"
           image={product.image}
           alt={product.name}
-          sx={{ height: 200, objectFit: 'contain', p: 2 }}
+          sx={{ height: {xs :150,sm:200}, objectFit: 'contain', p: 2 }}
         />
       </Box>
       <CardContent>
-        <Typography variant="h6" component="div" noWrap>
+        <Typography variant="body1" component="div">
           {product.name}
         </Typography>
         <Box sx={{ display: 'flex', alignItems: 'center', mt: 1 }}>
-          <Typography variant="h6" color="error">
+          <Typography variant="body1" color="primary">
             ${product.discountedPrice}
           </Typography>
           <Typography variant="body2" color="text.secondary" sx={{ ml: 1, textDecoration: 'line-through' }}>
@@ -46,12 +46,12 @@ export default function ProductCard({ product }) {
         </Box>
         <Button
           variant="outlined"
-          color="primary"
-          startIcon={<Iconify icon="eva:plus-fill" width={20} height={20} />}
+          color="error"
+          startIcon={<Iconify icon="eva:shopping-cart-outline" width={20} height={20} />}
           sx={{ mt: 2 }}
           fullWidth
         >
-          Add to Cart
+          Add
         </Button>
       </CardContent>
     </Card>
