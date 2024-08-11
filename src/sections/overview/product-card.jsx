@@ -1,59 +1,100 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { Card, CardContent, CardMedia, Chip, IconButton, Typography, Button, Box } from '@mui/material';
+import { Card, Typography, Button, Box, Link, Grid, Stack } from '@mui/material';
+
+import Label from 'src/components/label';
+import { fCurrency } from 'src/utils/format-number';
 
 import Iconify from 'src/components/iconify'; // Adjust path if needed
 
 export default function ProductCard({ product }) {
+  const renderDiscount = (
+    <Label
+      variant="filled"
+      color="error"
+      sx={{
+        zIndex: 9,
+        top: 16,
+        right: 16,
+        position: 'absolute',
+        textTransform: 'uppercase',
+      }}
+    >
+      {`${product.discount}% off`}
+    </Label>
+  );
+  const renderImg = (
+    <Box
+      component="img"
+      alt={product.name}
+      src={product.image}
+      sx={{
+        top: 0,
+        width: 1,
+        height: 1,
+        objectFit: 'cover',
+        position: 'absolute',
+      }}
+    />
+  );
+
   return (
-    <Card elevation={1} sx={{ borderRadius: 2 }}>
-      <Box sx={{ position: 'relative' }}>
-        {product.discount && (
-          <Chip
-            label={`${product.discount}% off`}
-            color="error"
-            size="small"
-            sx={{ position: 'absolute', top: 8, left: 8,fontSize : {xs : "0.5rem",sm:"0.7rem"} }}
-          />
-        )}
-        <Box sx={{ position: 'absolute', top: 8, right: 8 }}>
-          {/* <IconButton>
-            <Iconify icon="eva:eye-fill" color="disabled" width={20} height={20} />
-          </IconButton> */}
-          <IconButton>
-            <Iconify icon="eva:heart-outline" color="disabled" width={20} height={20} />
-          </IconButton>
-        </Box>
-        <CardMedia
-          component="img"
-          image={product.image}
-          alt={product.name}
-          sx={{ height: {xs :150,sm:200}, objectFit: 'contain', p: 2 }}
-        />
+    <Card>
+      <Box sx={{ pt: '100%', position: 'relative' }}>
+        {renderDiscount}
+
+        {renderImg}
       </Box>
-      <CardContent>
-        <Typography variant="body1" component="div">
+
+      <Stack spacing={2} sx={{ p: 3 }}>
+        <Link color="inherit" underline="none" variant="body1" fontWeight="bold">
           {product.name}
-        </Typography>
-        <Box sx={{ display: 'flex', alignItems: 'center', mt: 1 }}>
-          <Typography variant="body1" color="primary">
-            ${product.discountedPrice}
-          </Typography>
-          <Typography variant="body2" color="text.secondary" sx={{ ml: 1, textDecoration: 'line-through' }}>
-            ${product.originalPrice}
-          </Typography>
-        </Box>
-        <Button
-          variant="outlined"
-          color="error"
-          startIcon={<Iconify icon="eva:shopping-cart-outline" width={20} height={20} />}
-          sx={{ mt: 2 }}
-          fullWidth
-        >
-          Add
-        </Button>
-      </CardContent>
+        </Link>
+
+        <Grid container alignItems="center">
+          <Grid item xs={12} sm={6}>
+            <Typography variant="body1">
+              {fCurrency(product.discountedPrice)}
+              &nbsp;
+              {product.originalPrice && (
+                <Typography
+                  component="span"
+                  variant="subtitle2"
+                  sx={{
+                    color: 'text.disabled',
+                    textDecoration: 'line-through',
+                  }}
+                >
+                  {fCurrency(product.originalPrice)}
+                </Typography>
+              )}
+            </Typography>
+          </Grid>
+
+          <Grid
+            item
+            xs={12}
+            sm={6}
+            display="flex"
+            justifyContent={{ xs: 'center', sm: 'flex-end' }}
+          >
+            <Button
+              variant="outlined"
+              color="error"
+              startIcon={<Iconify icon="eva:shopping-cart-outline" width={20} height={20} />}
+              sx={{
+                mt: { xs: 2, sm: 0 }, // Adds margin-top on mobile only
+                fontSize: { xs: '0.7rem', sm: '0.9rem' }, // Smaller font size on mobile
+                px: { xs: 1.2, sm: 1.5 }, // Adjusts horizontal padding (left and right)
+                py: { xs: 0.4, sm: 0.6 }, // Adjusts vertical padding (top and bottom)
+              }}
+            >
+              Add
+            </Button>
+          </Grid>
+        </Grid>
+      </Stack>
     </Card>
   );
 }
@@ -64,6 +105,6 @@ ProductCard.propTypes = {
     image: PropTypes.string.isRequired,
     originalPrice: PropTypes.number.isRequired,
     discountedPrice: PropTypes.number.isRequired,
-    discount: PropTypes.number,  // discount is optional
+    discount: PropTypes.number, // discount is optional
   }).isRequired,
 };

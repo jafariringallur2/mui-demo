@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Grid, Typography, Box, Skeleton } from '@mui/material';
+import { Grid, Typography, Box, Skeleton,Button } from '@mui/material';
+import Iconify from 'src/components/iconify';
 import ProductCard from './product-card'; // Adjust path if needed
 
 const ProductList = () => {
@@ -80,6 +81,17 @@ const ProductList = () => {
           </Grid>
         ))}
       </Grid>
+      <Box mt={4} display="flex" justifyContent="center">
+        <Button
+          variant="contained"
+          color="error"
+          href="/products"
+          startIcon={<Iconify icon="mdi:shopping" width={20} height={20} />}
+          sx={{ width: {xs:'200px',sm:'300px'} }} // Adjust width as needed
+        >
+          Explore Products
+        </Button>
+      </Box>
     </Box>
   );
 };
