@@ -11,7 +11,7 @@ const Categories = () => {
       .get('https://web.botire.in/api/categories', {
         headers: {
           Accept: 'application/json',
-          BusinessUrl: 'botire',
+          BusinessUrl: 'boat',
         },
       })
       .then((response) => {
@@ -106,7 +106,7 @@ const Categories = () => {
                       }}
                     />
                     <Typography variant="body1" sx={{
-                      fontSize:{ xs : '0.8rem', sm: "1rem"}
+                      fontSize:{ xs : '0.7rem', sm: "0.9rem"}
                     }}>{category.name}</Typography>
                   </Box>
                 </Card>

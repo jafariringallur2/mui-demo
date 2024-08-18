@@ -10,7 +10,7 @@ export default function Header() {
           <Grid item xs={12} md={3}>
             <Box display="flex" alignItems="center" mb={2}>
               <img
-                src="https://web.botire.in/kiswa-white-gallery/logo.png"
+                src="https://www.boat-lifestyle.com/cdn/shop/files/boAt_logo_small_3067da8c-a83b-46dd-b28b-6ef1e16ccd17_small.svg"
                 alt="logo"
                 style={{ height: '40px', marginRight: '8px' }}
               />

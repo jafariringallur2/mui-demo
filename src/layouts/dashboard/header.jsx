@@ -51,7 +51,7 @@ export default function Header({ onOpenNav }) {
       >
         <Box
           component="img"
-          src="https://web.botire.in/kiswa-white-gallery/logo.png"
+          src="https://www.boat-lifestyle.com/cdn/shop/files/boAt_logo_small_3067da8c-a83b-46dd-b28b-6ef1e16ccd17_small.svg"
           alt="Logo"
           sx={{ height: {xs:"50px",sm:"60px"}}}
         />

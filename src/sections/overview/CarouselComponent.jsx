@@ -3,11 +3,14 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
-import { Box } from "@mui/material";
+import { Box, useMediaQuery, useTheme } from "@mui/material";
 
 import './view/app.css';
 
 const CarouselComponent = () => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+
   const settings = {
     dots: true,
     infinite: true,
@@ -52,11 +55,13 @@ const CarouselComponent = () => {
 
   const slides = [
     {
-      image: "https://rukminim1.flixcart.com/fk-p-flap/1600/270/image/ce09ea52690d3695.jpeg",
+      desktopImage: "https://www.boat-lifestyle.com/cdn/shop/files/S750_WEB_1600x.jpg",
+      mobileImage: "https://www.boat-lifestyle.com/cdn/shop/files/S750-MOB_600x.jpg",
       link: "#cat",
     },
     {
-      image: "https://rukminim1.flixcart.com/fk-p-flap/1600/270/image/f871c3dec2984ff3.jpeg",
+      desktopImage: "https://www.boat-lifestyle.com/cdn/shop/files/MONSOON-SALE-WEB_1_1440x.jpg",
+      mobileImage: "https://www.boat-lifestyle.com/cdn/shop/files/MONSOON-SALE-MOB_1_600x.jpg",
       link: "#cat",
     },
   ];
@@ -77,7 +82,7 @@ const CarouselComponent = () => {
               <Box
                 key={index}
                 sx={{
-                  backgroundImage: `url(${slide.image})`,
+                  backgroundImage: `url(${isMobile ? slide.mobileImage : slide.desktopImage})`,
                   backgroundSize: "cover",
                   backgroundPosition: "center",
                   borderRadius: "16px",
@@ -85,10 +90,9 @@ const CarouselComponent = () => {
                   position: "relative",
                   padding: "20px",
                   boxSizing: "border-box",
-                  height: {xs :"200px",sm:"300px"},
+                  height: {xs :"400px",sm:"350px"},
                 }}
               >
-               
                 <Box
                   sx={{
                     display: "flex",
@@ -99,19 +103,7 @@ const CarouselComponent = () => {
                     color: "white",
                   }}
                 >
-                 
-                  {/* <Button
-                    variant="contained"
-                    href={slide.link}
-                    sx={{
-                      backgroundColor: "#d32f2f",
-                      color: "#fff",
-                      borderRadius: "20px",
-                      padding: "5px 15px",
-                    }}
-                  >
-                    Claim
-                  </Button> */}
+                  {/* Add any content here, like buttons or text */}
                 </Box>
               </Box>
             ))}

@@ -48,7 +48,7 @@ export default function ProductCard({ product }) {
       </Box>
 
       <Stack spacing={2} sx={{ p: 3 }}>
-        <Link color="inherit" underline="none" variant="body1" fontWeight="bold">
+        <Link color="inherit" underline="none" variant="body2" fontWeight="bold">
           {product.name}
         </Link>
 
@@ -85,10 +85,11 @@ export default function ProductCard({ product }) {
               startIcon={<Iconify icon="eva:shopping-cart-outline" width={20} height={20} />}
               sx={{
                 mt: { xs: 2, sm: 0 }, // Adds margin-top on mobile only
-                fontSize: { xs: '0.7rem', sm: '0.9rem' }, // Smaller font size on mobile
-                px: { xs: 1.2, sm: 1.5 }, // Adjusts horizontal padding (left and right)
-                py: { xs: 0.4, sm: 0.6 }, // Adjusts vertical padding (top and bottom)
+                // fontSize: { xs: '0.7rem', sm: '0.9rem' }, // Smaller font size on mobile
+                // px: { xs: 1.2, sm: 1.5 }, // Adjusts horizontal padding (left and right)
+                // py: { xs: 0.4, sm: 0.6 }, // Adjusts vertical padding (top and bottom)
               }}
+              fullWidth
             >
               Add
             </Button>

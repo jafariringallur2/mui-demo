@@ -1,32 +1,27 @@
-import SvgColor from 'src/components/svg-color';
+import Iconify from 'src/components/iconify';
 
 // ----------------------------------------------------------------------
 
-const icon = (name, sx) => (
-  <SvgColor src={`/assets/icons/navbar/${name}.svg`} sx={{ ...sx, width: 24, height: 24 }} />
-);
-
 const navConfig = [
   {
-    title: 'dashboard',
+    title: 'home',
     path: '/',
-    icon: icon('ic_analytics', { width: 24, height: 24 }), // Adjust size here
+    icon: <Iconify width={24} icon="mdi:home-outline" />,
   },
   {
-    title: 'user',
-    path: '/user',
-    icon: icon('ic_user', { width: 24, height: 24 }), // Adjust size here
+    title: 'category',
+    path: '/category',
+    icon: <Iconify width={24} icon="mdi:apps-box" />,
   },
   {
-    title: 'product',
-    path: '/products',
-    icon: icon('ic_cart', { width: 24, height: 24 }), // Adjust size here
+    title: 'favorites',
+    path: '/favorites',
+    icon: <Iconify width={24} icon="mdi:heart-outline" />,
   },
   {
-    title: 'blog',
-    path: '/blog',
-    icon: icon('ic_blog', { width: 24, height: 24 }), // Adjust size here
+    title: 'account',
+    path: '/account',
+    icon: <Iconify width={24} icon="mdi:account-outline" />,
   },
 ];
-
 export default navConfig;

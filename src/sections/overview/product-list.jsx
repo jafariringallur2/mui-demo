@@ -14,7 +14,7 @@ const ProductList = () => {
         const response = await fetch('https://web.botire.in/api/products?limit=8', {
           headers: {
             'Accept': 'application/json',
-            'BusinessUrl': 'kiswa-white-gallery',
+            'BusinessUrl': 'boat',
           },
         });
         const data = await response.json();
