@@ -19,7 +19,7 @@ import Searchbar from './common/searchbar';
 
 // ----------------------------------------------------------------------
 
-export default function Header({ onOpenNav }) {
+export default function Header({ onOpenCart }) {
   const theme = useTheme();
 
   const lgUp = useResponsive('up', 'lg');
@@ -53,12 +53,12 @@ export default function Header({ onOpenNav }) {
           component="img"
           src="https://www.boat-lifestyle.com/cdn/shop/files/boAt_logo_small_3067da8c-a83b-46dd-b28b-6ef1e16ccd17_small.svg"
           alt="Logo"
-          sx={{ height: {xs:"50px",sm:"60px"}}}
+          sx={{ height: { xs: "50px", sm: "60px" } }}
         />
-  
+
         <Stack direction="row" alignItems="center" spacing={1}>
           <Searchbar />
-          <IconButton color="default">
+          <IconButton color="default" onClick={onOpenCart}>
             <Badge badgeContent="12" color="error">
               <Iconify width={24} icon="mdi:cart-outline" />
             </Badge>
@@ -70,5 +70,5 @@ export default function Header({ onOpenNav }) {
 }
 
 Header.propTypes = {
-  onOpenNav: PropTypes.func,
+  onOpenCart: PropTypes.func.isRequired,
 };
