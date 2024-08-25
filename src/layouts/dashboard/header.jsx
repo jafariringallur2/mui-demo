@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useCart  } from 'src/context/CartContext';
 import PropTypes from 'prop-types';
 import Box from '@mui/material/Box';
 import Badge from '@mui/material/Badge';
@@ -16,6 +17,7 @@ import Searchbar from './common/searchbar';
 import LoginDialog from './LoginDialog'; // Import the dialog component
 
 export default function Header({ onOpenNav }) {
+  const { cartCount } = useCart();
   const theme = useTheme();
   const lgUp = useResponsive('up', 'lg');
   const [openLoginDialog, setOpenLoginDialog] = useState(false);
@@ -75,10 +77,15 @@ export default function Header({ onOpenNav }) {
               </IconButton>
             )}
             <IconButton color="default">
-              <Badge badgeContent="12" color="error">
+             {cartCount > 0 && (
+                <Badge badgeContent={cartCount} color="error">
+                  <Iconify width={24} icon="mdi:cart-outline" />
+                </Badge>
+              )}
+              {cartCount === 0 && (
                 <Iconify width={24} icon="mdi:cart-outline" />
-              </Badge>
-            </IconButton>
+              )}
+              </IconButton>
           </Stack>
         </Toolbar>
       </AppBar>

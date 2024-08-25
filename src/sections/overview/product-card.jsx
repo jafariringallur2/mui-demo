@@ -1,14 +1,42 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-
-import { Card, Typography, Button, Box, Link, Grid, Stack } from '@mui/material';
-
+import {
+  Card,
+  Typography,
+  Button,
+  Box,
+  Link,
+  Grid,
+  Stack,
+  CircularProgress,
+  Snackbar,
+  Alert,
+  Portal
+} from '@mui/material';
 import Label from 'src/components/label';
 import { fCurrency } from 'src/utils/format-number';
-
 import Iconify from 'src/components/iconify'; // Adjust path if needed
+import { useCart } from 'src/context/CartContext';
 
 export default function ProductCard({ product }) {
+  const { addToCart } = useCart();
+  const [loading, setLoading] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+
+  const handleAddToCart = async () => {
+    setLoading(true);
+    try {
+      await addToCart(product.id);
+      setSnackbarOpen(true); // Show the snackbar on successful add
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
+  };
+
   const renderDiscount = (
     <Label
       variant="filled"
@@ -24,6 +52,7 @@ export default function ProductCard({ product }) {
       {`${product.discount}% off`}
     </Label>
   );
+
   const renderImg = (
     <Box
       component="img"
@@ -43,7 +72,6 @@ export default function ProductCard({ product }) {
     <Card>
       <Box sx={{ pt: '100%', position: 'relative' }}>
         {renderDiscount}
-
         {renderImg}
       </Box>
 
@@ -82,26 +110,47 @@ export default function ProductCard({ product }) {
             <Button
               variant="outlined"
               color="error"
-              startIcon={<Iconify icon="eva:shopping-cart-outline" width={20} height={20} />}
+              startIcon={
+                loading ? (
+                  <CircularProgress size={10} />
+                ) : (
+                  <Iconify icon="eva:shopping-cart-outline" width={20} height={20} />
+                )
+              }
               sx={{
-                mt: { xs: 2, sm: 0 }, // Adds margin-top on mobile only
-                // fontSize: { xs: '0.7rem', sm: '0.9rem' }, // Smaller font size on mobile
-                // px: { xs: 1.2, sm: 1.5 }, // Adjusts horizontal padding (left and right)
-                // py: { xs: 0.4, sm: 0.6 }, // Adjusts vertical padding (top and bottom)
+                mt: { xs: 2, sm: 0 },
+                // fontSize: { xs: '0.7rem', sm: '0.9rem' },
+                // px: { xs: 1.2, sm: 1.5 },
+                // py: { xs: 0.4, sm: 0.6 },
               }}
               fullWidth
+              onClick={handleAddToCart}
+              disabled={loading}
             >
-              Add
+              {loading ? 'Adding...' : 'Add'}
             </Button>
           </Grid>
         </Grid>
       </Stack>
+
+      <Portal>
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={3000}
+        onClose={handleSnackbarClose}
+      >
+        <Alert onClose={handleSnackbarClose} severity="success" sx={{ width: '100%' }}>
+          Product added to cart!
+        </Alert>
+      </Snackbar>
+      </Portal>
     </Card>
   );
 }
 
 ProductCard.propTypes = {
   product: PropTypes.shape({
+    id: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
     image: PropTypes.string.isRequired,
     originalPrice: PropTypes.number.isRequired,
