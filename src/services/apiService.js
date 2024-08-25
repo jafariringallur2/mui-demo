@@ -57,12 +57,17 @@ export const verifyOtp = (phone,otp) =>
     body: JSON.stringify({ userPhoneNumber: phone,otpValue: otp }),
   }).then(handleResponse);
 
-  export const addToCart = (id) =>
-  fetch(`${BASE_URL}/add-to-cart`, {
-    method: 'POST',
-    headers: getAuthHeaders(),
-    body: JSON.stringify({ id }),
-  }).then(handleResponse);
+  export const addToCart = (id, quantity = null) => {
+    const body = { id };
+    if (quantity !== null) {
+      body.qty = quantity;
+    }
+    return fetch(`${BASE_URL}/add-to-cart`, {
+      method: 'POST',
+      headers: getAuthHeaders(),
+      body: JSON.stringify(body),
+    }).then(handleResponse);
+  };
 
 export const getCartCount = () =>
   fetch(`${BASE_URL}/cart-count`, {

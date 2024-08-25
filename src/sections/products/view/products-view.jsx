@@ -1,63 +1,296 @@
-import { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import {
+  Box,
+  Grid,
+  Typography,
+  Button,
+  IconButton,
+  Skeleton,
+  useMediaQuery,
+  CircularProgress,
+  Snackbar,
+  Alert,
+  Portal,
+} from '@mui/material';
+import Iconify from 'src/components/iconify';
+import Label from 'src/components/label';
+import { fCurrency } from 'src/utils/format-number';
+import { useCart } from 'src/context/CartContext';
 
-import Stack from '@mui/material/Stack';
-import Container from '@mui/material/Container';
-import Grid from '@mui/material/Unstable_Grid2';
-import Typography from '@mui/material/Typography';
+const ProductDetails = () => {
+  const [product, setProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [loadingCart, setLoadingCart] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [quantity, setQuantity] = useState(1);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const isDesktop = useMediaQuery((theme) => theme.breakpoints.up('lg'));
+  const { addToCart } = useCart();
 
-import { products } from 'src/_mock/products';
+  useEffect(() => {
+    fetch('https://web.botire.in/api/product/X2q4gDqEzj0M', {
+      headers: {
+        accept: 'application/json',
+        businessurl: 'boat',
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setProduct(data.data);
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+  }, []);
 
-import ProductCard from '../product-card';
-import ProductSort from '../product-sort';
-import ProductFilters from '../product-filters';
-import ProductCartWidget from '../product-cart-widget';
-
-// ----------------------------------------------------------------------
-
-export default function ProductsView() {
-  const [openFilter, setOpenFilter] = useState(false);
-
-  const handleOpenFilter = () => {
-    setOpenFilter(true);
+  const handleQuantityChange = (change) => {
+    setQuantity((prev) => Math.max(1, prev + change));
   };
 
-  const handleCloseFilter = () => {
-    setOpenFilter(false);
+  const handleThumbnailClick = (index) => {
+    setCurrentImageIndex(index);
   };
+
+  const handleNextImage = () => {
+    setCurrentImageIndex((prev) => (prev + 1) % product.images.length);
+  };
+
+  const handlePrevImage = () => {
+    setCurrentImageIndex((prev) => (prev - 1 + product.images.length) % product.images.length);
+  };
+
+  const handleKeyDown = (event, index) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      handleThumbnailClick(index);
+    }
+  };
+
+  const handleAddToCart = async () => {
+    setLoadingCart(true);
+    try {
+      await addToCart(product.hashid, quantity);
+      setSnackbarOpen(true); // Show the snackbar on successful add
+    } finally {
+      setLoadingCart(false);
+    }
+  };
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
+  };
+
+  if (loading) {
+    return (
+      <Box padding={2}>
+        <Skeleton variant="rectangular" height={400} />
+        <Skeleton variant="text" height={40} width="60%" />
+        <Skeleton variant="text" height={20} width="40%" />
+        <Skeleton variant="text" height={20} width="30%" />
+        <Skeleton variant="rectangular" height={40} width="50%" />
+      </Box>
+    );
+  }
+
+  if (!product) {
+    return <Typography>Error loading product details.</Typography>;
+  }
 
   return (
-    <Container>
-      <Typography variant="h4" sx={{ mb: 5 }}>
-        Products
-      </Typography>
-
-      <Stack
-        direction="row"
-        alignItems="center"
-        flexWrap="wrap-reverse"
-        justifyContent="flex-end"
-        sx={{ mb: 5 }}
-      >
-        <Stack direction="row" spacing={1} flexShrink={0} sx={{ my: 1 }}>
-          <ProductFilters
-            openFilter={openFilter}
-            onOpenFilter={handleOpenFilter}
-            onCloseFilter={handleCloseFilter}
-          />
-
-          <ProductSort />
-        </Stack>
-      </Stack>
-
-      <Grid container spacing={3}>
-        {products.map((product) => (
-          <Grid key={product.id} xs={12} sm={6} md={3}>
-            <ProductCard product={product} />
+    <Box
+      padding={2}
+      display="flex"
+      flexDirection={{ xs: 'column', lg: 'row' }}
+      bgcolor="background.paper"
+      borderRadius={2}
+      boxShadow={3}
+    >
+      <Box display="flex" flexDirection={{ xs: 'column', lg: 'row' }} flex={1}>
+        {isDesktop && (
+          <Grid container direction="column" spacing={2} marginRight={2} width="20%">
+            {product.images.map((image, index) => (
+              <Grid item key={index}>
+                <Button
+                  onClick={() => handleThumbnailClick(index)}
+                  onKeyDown={(e) => handleKeyDown(e, index)}
+                  sx={{
+                    padding: 0,
+                    border: currentImageIndex === index ? '2px solid #000' : 'none',
+                  }}
+                  aria-label={`Thumbnail ${index + 1}`}
+                  tabIndex={0}
+                >
+                  <Box
+                    component="img"
+                    alt={`Thumbnail ${index + 1}`}
+                    src={image}
+                    sx={{
+                      width: '100%',
+                      borderRadius: 1,
+                      objectFit: 'cover',
+                    }}
+                  />
+                </Button>
+              </Grid>
+            ))}
           </Grid>
-        ))}
-      </Grid>
+        )}
+        <Box flex={1} position="relative">
+          <Box
+            component="img"
+            alt={product.name}
+            src={product.images[currentImageIndex]}
+            sx={{
+              width: '100%',
+              height: 'auto',
+              borderRadius: 2,
+              objectFit: 'cover',
+              position: 'relative',
+            }}
+          />
+          <IconButton
+            onClick={handlePrevImage}
+            onKeyDown={(e) => e.key === 'Enter' && handlePrevImage()}
+            sx={{ position: 'absolute', top: { sm: '45%', xs: '35%' }, left: 10, zIndex: 1 }}
+            aria-label="Previous image"
+          >
+            <Iconify width={24} icon="mdi:chevron-left" />
+          </IconButton>
+          <IconButton
+            onClick={handleNextImage}
+            onKeyDown={(e) => e.key === 'Enter' && handleNextImage()}
+            sx={{ position: 'absolute', top: { sm: '45%', xs: '35%' }, right: 10, zIndex: 1 }}
+            aria-label="Next image"
+          >
+            <Iconify width={24} icon="mdi:chevron-right" />
+          </IconButton>
+          {!isDesktop && (
+            <Grid container spacing={2} marginTop={1}>
+              {product.images.map((image, index) => (
+                <Grid item key={index} xs={3}>
+                  <Button
+                    onClick={() => handleThumbnailClick(index)}
+                    onKeyDown={(e) => handleKeyDown(e, index)}
+                    sx={{
+                      padding: 0,
+                      border: currentImageIndex === index ? '2px solid #000' : 'none',
+                    }}
+                    aria-label={`Thumbnail ${index + 1}`}
+                    tabIndex={0}
+                  >
+                    <Box
+                      component="img"
+                      alt={`Thumbnail ${index + 1}`}
+                      src={image}
+                      sx={{
+                        width: '100%',
+                        borderRadius: 1,
+                        objectFit: 'cover',
+                      }}
+                    />
+                  </Button>
+                </Grid>
+              ))}
+            </Grid>
+          )}
+        </Box>
+      </Box>
+      <Box flex={1} marginTop={{ xs: 2, lg: 0 }} marginLeft={{ lg: 2 }}>
+        <Typography variant="h3" fontWeight="bold">
+          {product.name}
+        </Typography>
+        <Typography
+          variant="body2"
+          color={product.in_stock === '1' ? 'success.main' : 'error.main'}
+        >
+          {product.in_stock === '1' ? 'In Stock' : 'Out of Stock'}
+        </Typography>
 
-      <ProductCartWidget />
-    </Container>
+        <Typography variant="h6" color="primary" marginTop={1}>
+          {fCurrency(product.show_price.selling_price)}
+          &nbsp;
+          {product.show_price.original_price && (
+            <Typography
+              component="span"
+              variant="subtitle2"
+              sx={{
+                color: 'text.disabled',
+                textDecoration: 'line-through',
+              }}
+            >
+              {fCurrency(product.show_price.original_price)}
+            </Typography>
+          )}
+        </Typography>
+        <Label variant="filled" color="error" marginTop={1}>
+          {`${product.show_price.offer}% off`}
+        </Label>
+
+        <Typography variant="body2" color="textSecondary" marginTop={1}>
+          {product.product_description}
+        </Typography>
+
+        <Box marginTop={8}>
+          <Box
+            display="flex"
+            alignItems="center"
+            justifyContent="space-between"
+            width="100%"
+            bgcolor="#f5f7fa"
+            borderRadius={1}
+            sx={{
+              px: { xs: 1, sm: 1.5 },
+              py: { xs: 0.3, sm: 0.6 },
+            }}
+          >
+            <IconButton
+              onClick={() => handleQuantityChange(-1)}
+              aria-label="Decrease quantity"
+              sx={{ color: 'primary', padding: '5px' }}
+            >
+              <Iconify width={24} icon="mdi:minus" />
+            </IconButton>
+            <Typography variant="h6" sx={{ fontWeight: 'bold', color: 'black' }}>
+              {quantity}
+            </Typography>
+            <IconButton
+              onClick={() => handleQuantityChange(1)}
+              aria-label="Increase quantity"
+              sx={{ color: 'primary', padding: '5px' }}
+            >
+              <Iconify width={24} icon="mdi:plus" />
+            </IconButton>
+          </Box>
+
+          <Button
+            variant="contained"
+            color="error"
+            startIcon={
+              loadingCart ? (
+                <CircularProgress size={10} />
+              ) : (
+                <Iconify icon="eva:shopping-cart-outline" width={20} height={20} />
+              )
+            }
+            fullWidth
+            onClick={handleAddToCart}
+            disabled={loadingCart}
+            sx={{
+              mt: 2,
+              px: { xs: 1.8, sm: 2 },
+              py: { xs: 0.8, sm: 1.1 },
+            }}
+          >
+            {loadingCart ? 'Adding...' : 'Add'}
+          </Button>
+        </Box>
+        <Portal>
+          <Snackbar open={snackbarOpen} autoHideDuration={3000} onClose={handleSnackbarClose}>
+            <Alert onClose={handleSnackbarClose} severity="success" sx={{ width: '100%' }}>
+              Product added to cart!
+            </Alert>
+          </Snackbar>
+        </Portal>
+      </Box>
+    </Box>
   );
-}
+};
+
+export default ProductDetails;
