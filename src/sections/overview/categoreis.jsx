@@ -1,29 +1,25 @@
-import axios from 'axios';
-import React, { useState, useEffect } from 'react';
+import React, { useState ,useEffect } from 'react';
 import { Box, Card, Grid, Button, CardMedia, Typography, Skeleton } from '@mui/material';
+import { getCategories } from 'src/services/apiService';
 
 const Categories = () => {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
 
+
   useEffect(() => {
-    axios
-      .get('https://web.botire.in/api/categories', {
-        headers: {
-          Accept: 'application/json',
-          BusinessUrl: 'boat',
-        },
-      })
-      .then((response) => {
-        if (response.data.success) {
-          setCategories(response.data.data.slice(0, 6)); // Limit to 6 categories
-        }
+    const fetchCategories = async () => {
+      try {
+        const data = await getCategories();
+        setCategories(data.data.slice(0, 6));
+      } catch (error) {
+        console.error('Failed to fetch items:', error);
+      } finally {
         setLoading(false);
-      })
-      .catch((error) => {
-        console.error('Error fetching categories:', error);
-        setLoading(false);
-      });
+      }
+    };
+
+    fetchCategories();
   }, []);
 
   return (

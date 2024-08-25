@@ -1,25 +1,21 @@
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import { useState,useEffect } from 'react';
-
 import Box from '@mui/material/Box';
-import { alpha } from '@mui/material/styles';
-import ListItemButton from '@mui/material/ListItemButton';
 import BottomNavigation from '@mui/material/BottomNavigation';
 import BottomNavigationAction from '@mui/material/BottomNavigationAction';
-
 import { usePathname } from 'src/routes/hooks';
 import { RouterLink } from 'src/routes/components';
-
 import { useResponsive } from 'src/hooks/use-responsive';
-
 import navConfig from './config-navigation';
-
-// ----------------------------------------------------------------------
+import LoginDrawer from './LoginDrawer'; // Import the LoginDrawer component
 
 export default function Nav({ openNav, onCloseNav }) {
   const pathname = usePathname();
   const upLg = useResponsive('up', 'lg');
   const [bottomNavValue, setBottomNavValue] = useState('');
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (openNav) {
@@ -30,10 +26,21 @@ export default function Nav({ openNav, onCloseNav }) {
 
   const handleBottomNavChange = (event, newValue) => {
     setBottomNavValue(newValue);
-    // Handle navigation change
+
+    if (newValue === 3) {
+      const token = localStorage.getItem('token');
+      if (token) {
+        navigate('/account');
+      } else {
+        setDialogOpen(true); 
+      }
+    }
   };
 
-  
+  const handleCloseDialog = () => {
+    setDialogOpen(false); // Close the dialog
+  };
+
   const renderBottomNav = (
     <BottomNavigation
       value={bottomNavValue}
@@ -44,8 +51,8 @@ export default function Nav({ openNav, onCloseNav }) {
       {navConfig.map((item) => (
         <BottomNavigationAction
           key={item.title}
-          component={RouterLink}
-          href={item.path}
+          component={item.title === 'account' ? undefined : RouterLink}
+          href={item.title === 'account' ? undefined : item.path}
           label={item.title}
           icon={item.icon}
         />
@@ -54,7 +61,8 @@ export default function Nav({ openNav, onCloseNav }) {
   );
 
   return (
-    upLg ? null : (
+    <>
+      {upLg ? null : (
         <Box
           sx={{
             display: { xs: 'block', lg: 'none' },
@@ -68,54 +76,13 @@ export default function Nav({ openNav, onCloseNav }) {
         >
           {renderBottomNav}
         </Box>
-    )
+      )}
+      <LoginDrawer open={dialogOpen} onClose={handleCloseDialog} /> {/* Render the LoginDrawer */}
+    </>
   );
-  
-  
 }
 
 Nav.propTypes = {
   openNav: PropTypes.bool,
   onCloseNav: PropTypes.func,
-};
-
-// ----------------------------------------------------------------------
-
-function NavItem({ item }) {
-  const pathname = usePathname();
-
-  const active = item.path === pathname;
-
-  return (
-    <ListItemButton
-      component={RouterLink}
-      href={item.path}
-      sx={{
-        minHeight: 44,
-        borderRadius: 0.75,
-        typography: 'body2',
-        color: 'text.secondary',
-        textTransform: 'capitalize',
-        fontWeight: 'fontWeightMedium',
-        ...(active && {
-          color: 'primary.main',
-          fontWeight: 'fontWeightSemiBold',
-          bgcolor: (theme) => alpha(theme.palette.primary.main, 0.08),
-          '&:hover': {
-            bgcolor: (theme) => alpha(theme.palette.primary.main, 0.16),
-          },
-        }),
-      }}
-    >
-      <Box component="span" sx={{ width: 24, height: 24, mr: 2 }}>
-        {item.icon}
-      </Box>
-
-      <Box component="span">{item.title} </Box>
-    </ListItemButton>
-  );
-}
-
-NavItem.propTypes = {
-  item: PropTypes.object,
 };
