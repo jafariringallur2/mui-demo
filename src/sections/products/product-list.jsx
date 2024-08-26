@@ -1,18 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { Grid, Typography, Box, Skeleton,Button } from '@mui/material';
-import Iconify from 'src/components/iconify';
+import PropTypes from 'prop-types';
+import { Grid, Typography, Box, Skeleton } from '@mui/material';
 import { getProducts } from 'src/services/apiService';
 import ProductCard from './product-card';
 
-const ProductList = () => {
+export default function ProductList({limit, category }) {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [title, setTitle] = useState('');
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const data = await getProducts();
+        const data = await getProducts(limit, category);
         if (data.success) {
           setProducts(data.data.map(product => ({
             id: product.id,
@@ -22,6 +23,7 @@ const ProductList = () => {
             discountedPrice: parseFloat(product.selling_price),
             discount: product.offer,
           })));
+          setTitle(`Exclusive ${data.head} Collection`);
         } else {
           setError('Failed to fetch products');
         }
@@ -33,13 +35,13 @@ const ProductList = () => {
     };
 
     fetchProducts();
-  }, []);
+  }, [limit, category]);
 
   if (loading) return (
     <Box sx={{ padding: 2 }}>
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
         <Typography variant="h5" fontWeight="bold">
-          Latest Products
+          {title}
         </Typography>
       </Box>
       <Grid container spacing={2}>
@@ -66,7 +68,7 @@ const ProductList = () => {
     <Box sx={{ padding: 2 }}>
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
         <Typography variant="h5" fontWeight="bold">
-          Latest Products
+          {title}
         </Typography>
       </Box>
       <Grid container spacing={2}>
@@ -76,19 +78,16 @@ const ProductList = () => {
           </Grid>
         ))}
       </Grid>
-      <Box mt={4} display="flex" justifyContent="center">
-        <Button
-          variant="contained"
-          color="error"
-          href="/products"
-          startIcon={<Iconify icon="mdi:shopping" width={20} height={20} />}
-          sx={{ width: {xs:'200px',sm:'300px'} }} // Adjust width as needed
-        >
-          Explore Products
-        </Button>
-      </Box>
     </Box>
   );
 };
 
-export default ProductList;
+ProductList.propTypes = {
+  limit: PropTypes.number,
+  category: PropTypes.string,
+};
+
+ProductList.defaultProps = {
+  limit: 8,
+  category: null,
+};

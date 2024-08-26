@@ -1,11 +1,12 @@
-import React, { useState ,useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, Card, Grid, Button, CardMedia, Typography, Skeleton } from '@mui/material';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import { getCategories } from 'src/services/apiService';
 
 const Categories = () => {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
-
+  const navigate = useNavigate(); // Initialize the useNavigate hook
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -21,6 +22,10 @@ const Categories = () => {
 
     fetchCategories();
   }, []);
+
+  const handleCategoryClick = (id) => {
+    navigate(`/categories/${id}`); // Navigate to the category page using the category id
+  };
 
   return (
     <Box sx={{ padding: 2 }}>
@@ -40,8 +45,8 @@ const Categories = () => {
                   sx={{
                     display: 'flex',
                     flexDirection: 'column',
-                    justifyContent: 'center', // Center content vertically
-                    alignItems: 'center', // Center content horizontally
+                    justifyContent: 'center',
+                    alignItems: 'center',
                     boxShadow: 1,
                     borderRadius: '50%',
                     height: { xs: 90, sm: 120 },
@@ -51,7 +56,7 @@ const Categories = () => {
                   }}
                 >
                   <Skeleton
-                    variant="circle"
+                    variant="circular"
                     sx={{
                       width: { xs: 35, sm: 50 },
                       height: { xs: 35, sm: 50 },
@@ -79,7 +84,9 @@ const Categories = () => {
                     width: { xs: 90, sm: 120 },
                     textAlign: 'center',
                     padding: 2,
+                    cursor: 'pointer', // Add cursor to indicate clickable
                   }}
+                  onClick={() => handleCategoryClick(category.id)} // Handle click event
                 >
                   <Box
                     sx={{
@@ -102,7 +109,7 @@ const Categories = () => {
                       }}
                     />
                     <Typography variant="body1" sx={{
-                      fontSize:{ xs : '0.7rem', sm: "0.9rem"}
+                      fontSize: { xs: '0.7rem', sm: "0.9rem" }
                     }}>{category.name}</Typography>
                   </Box>
                 </Card>
