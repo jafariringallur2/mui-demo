@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Grid, Typography, Box, Skeleton,Button } from '@mui/material';
 import Iconify from 'src/components/iconify';
-import ProductCard from './product-card'; // Adjust path if needed
+import { getProducts } from 'src/services/apiService';
+import ProductCard from './product-card';
 
 const ProductList = () => {
   const [products, setProducts] = useState([]);
@@ -11,18 +12,12 @@ const ProductList = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch('https://web.botire.in/api/products?limit=8', {
-          headers: {
-            'Accept': 'application/json',
-            'BusinessUrl': 'boat',
-          },
-        });
-        const data = await response.json();
+        const data = await getProducts();
         if (data.success) {
           setProducts(data.data.map(product => ({
             id: product.id,
             name: product.name,
-            image: product.image1, // You can choose image1 or image2
+            image: product.image1,
             originalPrice: parseFloat(product.original_price),
             discountedPrice: parseFloat(product.selling_price),
             discount: product.offer,

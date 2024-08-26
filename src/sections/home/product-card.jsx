@@ -5,14 +5,15 @@ import {
   Typography,
   Button,
   Box,
-  Link,
+  Link as MuiLink,
   Grid,
   Stack,
   CircularProgress,
   Snackbar,
   Alert,
-  Portal
+  Portal,
 } from '@mui/material';
+import { Link as RouterLink } from 'react-router-dom'; // Import Link from react-router-dom
 import Label from 'src/components/label';
 import { fCurrency } from 'src/utils/format-number';
 import Iconify from 'src/components/iconify'; // Adjust path if needed
@@ -55,9 +56,8 @@ export default function ProductCard({ product }) {
 
   const renderImg = (
     <Box
-      component="img"
-      alt={product.name}
-      src={product.image}
+      component={RouterLink} // Use RouterLink to make the image clickable
+      to={`/product/${product.id}`} // Navigate to the product details page
       sx={{
         top: 0,
         width: 1,
@@ -65,7 +65,18 @@ export default function ProductCard({ product }) {
         objectFit: 'cover',
         position: 'absolute',
       }}
-    />
+    >
+      <Box
+        component="img"
+        alt={product.name}
+        src={product.image}
+        sx={{
+          width: 1,
+          height: 1,
+          objectFit: 'cover',
+        }}
+      />
+    </Box>
   );
 
   return (
@@ -76,9 +87,16 @@ export default function ProductCard({ product }) {
       </Box>
 
       <Stack spacing={2} sx={{ p: 3 }}>
-        <Link color="inherit" underline="none" variant="body2" fontWeight="bold">
+        <MuiLink
+          component={RouterLink} // Use RouterLink to make the name clickable
+          to={`/product/${product.id}`} // Navigate to the product details page
+          color="inherit"
+          underline="none"
+          variant="body2"
+          fontWeight="bold"
+        >
           {product.name}
-        </Link>
+        </MuiLink>
 
         <Grid container alignItems="center">
           <Grid item xs={12} sm={6}>
@@ -119,9 +137,6 @@ export default function ProductCard({ product }) {
               }
               sx={{
                 mt: { xs: 2, sm: 0 },
-                // fontSize: { xs: '0.7rem', sm: '0.9rem' },
-                // px: { xs: 1.2, sm: 1.5 },
-                // py: { xs: 0.4, sm: 0.6 },
               }}
               fullWidth
               onClick={handleAddToCart}
@@ -134,15 +149,15 @@ export default function ProductCard({ product }) {
       </Stack>
 
       <Portal>
-      <Snackbar
-        open={snackbarOpen}
-        autoHideDuration={3000}
-        onClose={handleSnackbarClose}
-      >
-        <Alert onClose={handleSnackbarClose} severity="success" sx={{ width: '100%' }}>
-          Product added to cart!
-        </Alert>
-      </Snackbar>
+        <Snackbar
+          open={snackbarOpen}
+          autoHideDuration={3000}
+          onClose={handleSnackbarClose}
+        >
+          <Alert onClose={handleSnackbarClose} severity="success" sx={{ width: '100%' }}>
+            Product added to cart!
+          </Alert>
+        </Snackbar>
       </Portal>
     </Card>
   );

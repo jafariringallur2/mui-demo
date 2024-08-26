@@ -35,6 +35,32 @@ export const getCategories = () =>
     },
   }).then(handleResponse);
 
+  export const getProducts = (limit = 8, category = null) => {
+    let queryParams = `?limit=${limit}`;
+    if (category) {
+      queryParams += `&category=${encodeURIComponent(category)}`;
+    }
+  
+    return fetch(`${BASE_URL}/products${queryParams}`, {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'BusinessUrl': BusinessUrl,
+      },
+    }).then(handleResponse);
+  };
+
+export const getProductDetails = (id) =>
+  fetch(`${BASE_URL}/product/${id}`, {
+    method: 'GET',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      'BusinessUrl': BusinessUrl,
+    },
+  }).then(handleResponse);
+
 export const sendOtp = (phone) =>
   fetch(`${BASE_URL}/send-login-otp`, {
     method: 'POST',

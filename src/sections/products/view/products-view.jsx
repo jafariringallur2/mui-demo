@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import {
   Box,
   Grid,
@@ -16,6 +17,7 @@ import Iconify from 'src/components/iconify';
 import Label from 'src/components/label';
 import { fCurrency } from 'src/utils/format-number';
 import { useCart } from 'src/context/CartContext';
+import { getProductDetails } from 'src/services/apiService';
 
 const ProductDetails = () => {
   const [product, setProduct] = useState(null);
@@ -26,21 +28,23 @@ const ProductDetails = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const isDesktop = useMediaQuery((theme) => theme.breakpoints.up('lg'));
   const { addToCart } = useCart();
+  const { id } = useParams();
 
   useEffect(() => {
-    fetch('https://web.botire.in/api/product/X2q4gDqEzj0M', {
-      headers: {
-        accept: 'application/json',
-        businessurl: 'boat',
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
+    const fetchProductDetails = async () => {
+      try {
+        const data = await getProductDetails(id);
         setProduct(data.data);
+      } catch (error) {
+        console.error('Failed to fetch items:', error);
+        setLoading(false)
+      } finally {
         setLoading(false);
-      })
-      .catch(() => setLoading(false));
-  }, []);
+      }
+    };
+
+    fetchProductDetails();
+  }, [id]);
 
   const handleQuantityChange = (change) => {
     setQuantity((prev) => Math.max(1, prev + change));
