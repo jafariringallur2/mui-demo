@@ -35,6 +35,9 @@ export default function Header({ onOpenNav }) {
   const handleCloseLoginDialog = () => {
     setOpenLoginDialog(false);
   };
+  const handleCartClick = () => {
+    navigate('/cart');
+  };
 
   return (
     <>
@@ -76,7 +79,7 @@ export default function Header({ onOpenNav }) {
                 <Iconify width={24} icon="mdi:account-outline" />
               </IconButton>
             )}
-            <IconButton color="default">
+            <IconButton color="default" onClick={handleCartClick}>
              {cartCount > 0 && (
                 <Badge badgeContent={cartCount} color="error">
                   <Iconify width={24} icon="mdi:cart-outline" />

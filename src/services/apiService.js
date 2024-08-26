@@ -100,3 +100,9 @@ export const getCartCount = () =>
     method: 'GET',
     headers: getAuthHeaders(),
   }).then(handleResponse);
+  
+export const getCartItems = () =>
+  fetch(`${BASE_URL}/cart-items`, {
+    method: 'GET',
+    headers: getAuthHeaders(),
+  }).then(handleResponse);
