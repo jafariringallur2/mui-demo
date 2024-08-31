@@ -56,8 +56,8 @@ export default function ProductCard({ product }) {
 
   const renderImg = (
     <Box
-      component={RouterLink} // Use RouterLink to make the image clickable
-      to={`/product/${product.id}`} // Navigate to the product details page
+      component={RouterLink}
+      to={`/product/${product.id}`} 
       sx={{
         top: 0,
         width: 1,

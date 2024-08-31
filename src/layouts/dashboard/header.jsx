@@ -43,7 +43,7 @@ export default function Header({ onOpenNav }) {
     <>
       <AppBar
         sx={{
-          boxShadow: 'none',
+          boxShadow: '0px 4px 6px -1px rgba(0,0,0,0.1)',
           height: HEADER.H_MOBILE,
           zIndex: theme.zIndex.appBar + 1,
           ...bgBlur({
@@ -69,7 +69,8 @@ export default function Header({ onOpenNav }) {
             component="img"
             src="https://www.boat-lifestyle.com/cdn/shop/files/boAt_logo_small_3067da8c-a83b-46dd-b28b-6ef1e16ccd17_small.svg"
             alt="Logo"
-            sx={{ height: { xs: '50px', sm: '60px' } }}
+            sx={{ height: { xs: '50px', sm: '60px' },cursor:"pointer" }}
+            onClick={() => navigate('/')}
           />
 
           <Stack direction="row" alignItems="center" spacing={1}>
