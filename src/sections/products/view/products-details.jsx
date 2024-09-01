@@ -83,12 +83,71 @@ const ProductDetails = () => {
 
   if (loading) {
     return (
-      <Box padding={2}>
-        <Skeleton variant="rectangular" height={400} />
-        <Skeleton variant="text" height={40} width="60%" />
-        <Skeleton variant="text" height={20} width="40%" />
-        <Skeleton variant="text" height={20} width="30%" />
-        <Skeleton variant="rectangular" height={40} width="50%" />
+      <Box
+        padding={2}
+        display="flex"
+        flexDirection={{ xs: 'column', lg: 'row' }}
+        bgcolor="background.paper"
+        borderRadius={2}
+        boxShadow={3}
+      >
+        <Box display="flex" flexDirection={{ xs: 'column', lg: 'row' }} flex={1}>
+          {isDesktop && (
+            <Grid container direction="column" spacing={2} marginRight={2} width="20%">
+              <Grid item>
+                <Skeleton variant="rectangular" width="100%" height={80} />
+              </Grid>
+              <Grid item>
+                <Skeleton variant="rectangular" width="100%" height={80} />
+              </Grid>
+              <Grid item>
+                <Skeleton variant="rectangular" width="100%" height={80} />
+              </Grid>
+              <Grid item>
+                <Skeleton variant="rectangular" width="100%" height={80} />
+              </Grid>
+            </Grid>
+          )}
+
+          <Box flex={1} position="relative">
+            <Skeleton variant="rectangular" width="100%" height={400} sx={{ borderRadius: 2 }} />
+
+            {!isDesktop && (
+              <Grid container spacing={2} marginTop={1}>
+                <Grid item xs={3}>
+                  <Skeleton variant="rectangular" width="100%" height={80} />
+                </Grid>
+                <Grid item xs={3}>
+                  <Skeleton variant="rectangular" width="100%" height={80} />
+                </Grid>
+                <Grid item xs={3}>
+                  <Skeleton variant="rectangular" width="100%" height={80} />
+                </Grid>
+                <Grid item xs={3}>
+                  <Skeleton variant="rectangular" width="100%" height={80} />
+                </Grid>
+              </Grid>
+            )}
+          </Box>
+        </Box>
+
+        <Box flex={1} marginTop={{ xs: 2, lg: 0 }} marginLeft={{ lg: 2 }}>
+          <Skeleton variant="text" width="80%" height={40} />
+          <Skeleton variant="text" width="10%" marginTop={1} />
+          <Skeleton variant="text" width="40%" marginTop={2} />
+
+          <Box marginTop={1}>
+            <Skeleton variant="text" width="10%" />
+          </Box>
+
+          <Skeleton variant="text" width="90%" height={20} />
+          <Skeleton variant="text" width="90%" height={20} />
+
+          <Box marginTop={8}>
+            <Skeleton variant="text" width="80%" height={60} />
+            <Skeleton variant="text" width="80%" height={60} />
+          </Box>
+        </Box>
       </Box>
     );
   }

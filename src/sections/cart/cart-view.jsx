@@ -38,12 +38,16 @@ const ShoppingCart = () => {
       .finally(() => setLoading(false));
   }, [cartCount]);
 
-  const itemsTotal = cartItems.reduce(
+  const totalSellingPrice = cartItems.reduce(
     (sum, item) => sum + parseFloat(item.product.selling_price) * parseInt(item.qty, 10),
     0
   );
-  const discount = 15000; // Example static discount
-  const grandTotal = itemsTotal - discount;
+  const totalPrice = cartItems.reduce(
+    (sum, item) => sum + parseFloat(item.product.original_price) * parseInt(item.qty, 10),
+    0
+  );
+  const discount = totalPrice-totalSellingPrice; // Example static discount
+  const grandTotal = totalSellingPrice;
 
   const handlerRmoveCartItem = async (id) => {
     try {
@@ -73,7 +77,7 @@ const ShoppingCart = () => {
     return (
       <Grid container spacing={4} padding={2}>
         <Grid item xs={12} md={8}>
-          <Typography variant="h4" gutterBottom>
+          <Typography variant="h4" gutterBottom mb={4}>
             Shopping Cart
           </Typography>
           {Array.from(new Array(3)).map((_, index) => (
@@ -82,50 +86,87 @@ const ShoppingCart = () => {
               display="flex"
               alignItems="center"
               justifyContent="space-between"
+              borderRadius={1}
               mb={3}
+              sx={{
+                flexDirection: {
+                  xs: 'column',
+                  md: 'row',
+                },
+                boxShadow: '0px 4px 6px -1px rgba(0,0,0,0.1)',
+              }}
             >
-              <Box display="flex" alignItems="center">
+              <Box display="flex" alignItems="center" sx={{ flex: 1 }}>
                 <Skeleton
                   variant="rectangular"
                   width={80}
                   height={80}
-                  style={{ marginRight: 16 }}
+                  sx={{ marginRight: 6, marginLeft: 1, marginBottom: 1 }}
                 />
-                <Box>
+                <Box sx={{ flex: 1 }}>
                   <Skeleton variant="text" width={150} height={24} />
-                  <Skeleton variant="text" width={100} height={20} />
-                  <Box display="flex" alignItems="center" mt={1}>
-                    <IconButton disabled>
-                      <Iconify icon="eva:minus-fill" width={20} height={20} />
-                    </IconButton>
-                    <Skeleton variant="rectangular" width={40} height={40} />
-                    <IconButton disabled>
-                      <Iconify icon="eva:plus-fill" width={20} height={20} />
-                    </IconButton>
-                  </Box>
+                  <Grid
+                    container
+                    spacing={2}
+                    alignItems="center"
+                    justifyContent={{
+                      xs: 'flex-start',
+                      md: 'space-between',
+                    }}
+                  >
+                    <Grid item xs={12} md={6}>
+                      <Skeleton variant="text" width={100} height={20} />
+                      <Skeleton variant="text" width={50} height={25} />
+                    </Grid>
+                    <Grid item xs={12} md={6} sx={{ textAlign: 'right' }}>
+                      <Box
+                        display="flex"
+                        alignItems="center"
+                        justifyContent={{
+                          xs: 'flex-start',
+                          md: 'flex-end',
+                        }}
+                        width="100%"
+                        borderRadius={1}
+                        mb={{
+                          xs: 2,
+                        }}
+                      >
+                        <Box
+                          display="flex"
+                          alignItems="center"
+                          sx={{ bgcolor: '#e9f2ff', borderRadius: 2, mr: 2 }}
+                        >
+                          <IconButton disabled>
+                            <Iconify icon="mdi:minus" width={20} />
+                          </IconButton>
+                          <Skeleton variant="rectangular" width={20} height={20} sx={{ mx: 1 }} />
+                          <IconButton disabled>
+                            <Iconify icon="mdi:plus" width={20} />
+                          </IconButton>
+                        </Box>
+                        <IconButton disabled>
+                          <Iconify icon="mdi:trash-can-outline" width={20} />
+                        </IconButton>
+                      </Box>
+                    </Grid>
+                  </Grid>
                 </Box>
               </Box>
-              <Box textAlign="right">
-                <Skeleton variant="text" width={80} height={24} />
-                <Skeleton variant="text" width={80} height={20} />
-              </Box>
-              <IconButton disabled>
-                <Iconify icon="eva:close-outline" width={20} height={20} />
-              </IconButton>
             </Box>
           ))}
         </Grid>
         <Grid item xs={12} md={4}>
-          <Box padding={3} boxShadow={3} borderRadius={2}>
+          <Box padding={3} boxShadow={3} borderRadius={2} mt={4}>
             <Skeleton variant="text" width={120} height={30} />
-            <Skeleton variant="rectangular" width="100%" height={56} style={{ marginTop: 16 }} />
+            <Skeleton variant="rectangular" width="100%" height={56} sx={{ marginTop: 2 }} />
             <Box mt={3}>
               <Skeleton variant="text" width={180} height={24} />
               <Skeleton variant="text" width={180} height={24} />
               <Skeleton variant="text" width={180} height={24} />
-              <Skeleton variant="text" width={180} height={30} style={{ marginTop: 16 }} />
+              <Skeleton variant="text" width={180} height={30} sx={{ marginTop: 2 }} />
             </Box>
-            <Skeleton variant="rectangular" width="100%" height={56} style={{ marginTop: 24 }} />
+            <Skeleton variant="rectangular" width="100%" height={56} sx={{ marginTop: 3 }} />
           </Box>
         </Grid>
       </Grid>
@@ -135,7 +176,7 @@ const ShoppingCart = () => {
   return (
     <Grid container spacing={4} padding={2}>
       <Grid item xs={12} md={8}>
-        <Typography variant="h4" gutterBottom>
+        <Typography variant="h4" gutterBottom mb={4}>
           Shopping Cart
         </Typography>
         {cartItems.map((item) => {
@@ -150,6 +191,7 @@ const ShoppingCart = () => {
               display="flex"
               alignItems="center"
               justifyContent="space-between"
+              borderRadius={1}
               mb={3}
               sx={{
                 flexDirection: {
@@ -250,7 +292,13 @@ const ShoppingCart = () => {
                           width="100%"
                           borderRadius={1}
                         >
-                          <Box display="flex" alignItems="center" bgcolor="#e9f2ff" sx={{ mr: 2 }}>
+                          <Box
+                            display="flex"
+                            borderRadius={2}
+                            alignItems="center"
+                            bgcolor="#e9f2ff"
+                            sx={{ mr: 2 }}
+                          >
                             <IconButton
                               onClick={() => handleQuantityChange(item.id, -1)}
                               aria-label="Decrease quantity"
@@ -291,7 +339,7 @@ const ShoppingCart = () => {
         })}
       </Grid>
       <Grid item xs={12} md={4}>
-        <Box padding={3} boxShadow={3} borderRadius={2}>
+        <Box padding={3} boxShadow={3} borderRadius={2} mt={4}>
           <Typography variant="h6" gutterBottom>
             Payment
           </Typography>
@@ -309,13 +357,40 @@ const ShoppingCart = () => {
             }}
           />
           <Box mt={3}>
-            <Typography>Items total: ₹{itemsTotal.toFixed(2)}</Typography>
-            <Typography>Discount: -₹{discount.toFixed(2)}</Typography>
-            <Typography>Sub Total: ₹{grandTotal.toFixed(2)}</Typography>
-            <Typography variant="h6" mt={2}>
-              Grand Total: ₹{grandTotal.toFixed(2)}
-            </Typography>
+            <Grid container spacing={2} mb={1}>
+              <Grid item xs={6}>
+                <Typography>Items total:</Typography>
+              </Grid>
+              <Grid item xs={6} textAlign="right">
+                <Typography>₹{totalPrice.toFixed(2)}</Typography>
+              </Grid>
+            </Grid>
+            <Grid container spacing={2} mb={1}>
+              <Grid item xs={6}>
+                <Typography>Discount:</Typography>
+              </Grid>
+              <Grid item xs={6} textAlign="right">
+                <Typography color="green">-₹{discount.toFixed(2)}</Typography>
+              </Grid>
+            </Grid>
+            <Grid container spacing={2} mb={1}>
+              <Grid item xs={6}>
+                <Typography>Sub Total:</Typography>
+              </Grid>
+              <Grid item xs={6} textAlign="right">
+                <Typography>₹{grandTotal.toFixed(2)}</Typography>
+              </Grid>
+            </Grid>
+            <Grid container spacing={2} mt={2}>
+              <Grid item xs={6}>
+                <Typography variant="h6">Grand Total:</Typography>
+              </Grid>
+              <Grid item xs={6} textAlign="right">
+                <Typography variant="h6">₹{grandTotal.toFixed(2)}</Typography>
+              </Grid>
+            </Grid>
           </Box>
+
           <Button variant="contained" color="error" fullWidth sx={{ mt: 3 }}>
             Check Out
           </Button>
