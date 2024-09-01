@@ -35,8 +35,8 @@ export const getCategories = () =>
     },
   }).then(handleResponse);
 
-  export const getProducts = (limit = 8, category = null) => {
-    let queryParams = `?limit=${limit}`;
+  export const getProducts = (limit = 8, category = null,page = 1) => {
+    let queryParams = `?limit=${limit}&page=${page}`;
     if (category) {
       queryParams += `&category=${encodeURIComponent(category)}`;
     }

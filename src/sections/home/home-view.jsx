@@ -16,7 +16,7 @@ export default function HomeView() {
     <div>
       <CarouselComponent />
       <Categories />
-      <ProductList title='Latest Products' />
+      <ProductList title='Latest Products' source='home' />
       <Box mt={4} display="flex" justifyContent="center">
         <Button
           variant="contained"
