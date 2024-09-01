@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { createContext, useState, useContext, useEffect, useMemo, useCallback } from 'react';
-import { addToCart as addToCartAPI, getCartCount as getCartCountAPI } from 'src/services/apiService';
+import { addToCart as addToCartAPI, getCartCount as getCartCountAPI , removeCartItem as removeCartItemAPI} from 'src/services/apiService';
 
 // Create a context for the cart
 const CartContext = createContext();
@@ -37,13 +37,27 @@ export const CartProvider = ({ children }) => {
     }
   }, [fetchCartCount]);
 
+  // Add item to the cart
+  const removeCartItem = useCallback(async (id,) => {
+    setLoading(true);
+    try {
+      await removeCartItemAPI(id);
+      // Optionally, refetch cart count after adding an item
+      await fetchCartCount();
+    } catch (error) {
+      console.error('Failed to add item to cart:', error);
+    } finally {
+      setLoading(false);
+    }
+  }, [fetchCartCount]);
+
   // Initial fetch of cart count
   useEffect(() => {
     fetchCartCount();
   }, [fetchCartCount]);
 
   // Memoize the context value to avoid unnecessary re-renders
-  const contextValue = useMemo(() => ({ cartCount, addToCart, cartLoading }), [cartCount, addToCart, cartLoading]);
+  const contextValue = useMemo(() => ({ cartCount, addToCart,removeCartItem, cartLoading }), [cartCount, addToCart,removeCartItem, cartLoading]);
 
   return (
     <CartContext.Provider value={contextValue}>

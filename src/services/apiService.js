@@ -95,6 +95,15 @@ export const verifyOtp = (phone,otp) =>
     }).then(handleResponse);
   };
 
+  export const removeCartItem = (id) => {
+    const body = { id };
+    return fetch(`${BASE_URL}/cart-item`, {
+      method: 'DELETE',
+      headers: getAuthHeaders(),
+      body: JSON.stringify(body),
+    }).then(handleResponse);
+  };
+
 export const getCartCount = () =>
   fetch(`${BASE_URL}/cart-count`, {
     method: 'GET',

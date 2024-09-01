@@ -57,7 +57,7 @@ export default function ProductCard({ product }) {
   const renderImg = (
     <Box
       component={RouterLink}
-      to={`/product/${product.id}`} 
+      to={`/product/${product.id}`}
       sx={{
         top: 0,
         width: 1,
@@ -100,13 +100,14 @@ export default function ProductCard({ product }) {
 
         <Grid container alignItems="center">
           <Grid item xs={12} sm={6}>
-            <Typography variant="body1">
-              {fCurrency(product.discountedPrice)}
-              &nbsp;
+            <Box>
+              <Typography variant="body1" color="primary" fontSize={16}>
+                {fCurrency(product.discountedPrice)}
+              </Typography>
               {product.originalPrice && (
                 <Typography
-                  component="span"
                   variant="subtitle2"
+                  fontSize={13}
                   sx={{
                     color: 'text.disabled',
                     textDecoration: 'line-through',
@@ -115,7 +116,7 @@ export default function ProductCard({ product }) {
                   {fCurrency(product.originalPrice)}
                 </Typography>
               )}
-            </Typography>
+            </Box>
           </Grid>
 
           <Grid
@@ -149,11 +150,7 @@ export default function ProductCard({ product }) {
       </Stack>
 
       <Portal>
-        <Snackbar
-          open={snackbarOpen}
-          autoHideDuration={3000}
-          onClose={handleSnackbarClose}
-        >
+        <Snackbar open={snackbarOpen} autoHideDuration={3000} onClose={handleSnackbarClose}>
           <Alert onClose={handleSnackbarClose} severity="success" sx={{ width: '100%' }}>
             Product added to cart!
           </Alert>

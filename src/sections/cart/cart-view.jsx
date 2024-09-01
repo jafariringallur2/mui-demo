@@ -11,16 +11,21 @@ import {
   Link as MuiLink,
   IconButton,
   TextField,
+  CircularProgress,
   Skeleton,
 } from '@mui/material';
 import Iconify from 'src/components/iconify';
-import { getCartItems } from 'src/services/apiService'; // Ensure this path is correct
+import { getCartItems } from 'src/services/apiService';
+import { useCart } from 'src/context/CartContext';
 
 const ShoppingCart = () => {
+  const { removeCartItem, cartCount } = useCart();
   const [cartItems, setCartItems] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [removeLoadingId, setRemoveLoadingId] = useState(null);
 
   useEffect(() => {
+    setLoading(true);
     getCartItems()
       .then((response) => {
         if (response.success) {
@@ -31,7 +36,7 @@ const ShoppingCart = () => {
         console.error('Failed to fetch cart items', error);
       })
       .finally(() => setLoading(false));
-  }, []);
+  }, [cartCount]);
 
   const itemsTotal = cartItems.reduce(
     (sum, item) => sum + parseFloat(item.product.selling_price) * parseInt(item.qty, 10),
@@ -39,6 +44,15 @@ const ShoppingCart = () => {
   );
   const discount = 15000; // Example static discount
   const grandTotal = itemsTotal - discount;
+
+  const handlerRmoveCartItem = async (id) => {
+    try {
+      setRemoveLoadingId(id);
+      await removeCartItem(id);
+    } finally {
+      setRemoveLoadingId(null);
+    }
+  };
 
   const handleQuantityChange = (itemId, change) => {
     setCartItems((prevItems) =>
@@ -54,7 +68,6 @@ const ShoppingCart = () => {
       })
     );
   };
-  
 
   if (loading) {
     return (
@@ -138,8 +151,15 @@ const ShoppingCart = () => {
               alignItems="center"
               justifyContent="space-between"
               mb={3}
+              sx={{
+                flexDirection: {
+                  xs: 'column',
+                  md: 'row',
+                },
+                boxShadow: '0px 4px 6px -1px rgba(0,0,0,0.1)',
+              }}
             >
-              <Box display="flex" alignItems="center">
+              <Box display="flex" alignItems="center" sx={{ flex: 1 }}>
                 <Box
                   component={RouterLink}
                   to={`/product/${item.product.id}`}
@@ -162,7 +182,7 @@ const ShoppingCart = () => {
                   />
                 </Box>
 
-                <Box>
+                <Box sx={{ flex: 1 }}>
                   <MuiLink
                     component={RouterLink}
                     to={`/product/${item.product.id}`}
@@ -173,60 +193,99 @@ const ShoppingCart = () => {
                   >
                     {item.product.name}
                   </MuiLink>
-                  <Typography variant="body1" color="primary">
-                  {fCurrency(selling_price * item.qty)}
-                    &nbsp;
-                    {original_price && (
-                      <Typography
-                        component="span"
-                        variant="subtitle2"
-                        sx={{
-                          color: 'text.disabled',
-                          textDecoration: 'line-through',
-                        }}
-                      >
-                        {fCurrency(original_price * item.qty)}
-                      </Typography>
-                    )}
-                  </Typography>
-                  {offerPercentage > 0 && (
-                    <Label variant="filled" color="error">
-                      {offerPercentage}% off
-                    </Label>
-                  )}
+
+                  <Box
+                    key={item.id}
+                    mb={3}
+                    sx={{
+                      flexDirection: {
+                        xs: 'column',
+                        md: 'row',
+                      },
+                    }}
+                  >
+                    <Grid
+                      container
+                      spacing={2}
+                      alignItems="center"
+                      justifyContent={{
+                        xs: 'flex-start',
+                        md: 'space-between',
+                      }}
+                    >
+                      <Grid item xs={12} md={6}>
+                        <Box>
+                          <Typography variant="body1" color="primary">
+                            {fCurrency(selling_price * item.qty)}
+                            &nbsp;
+                            {original_price && (
+                              <Typography
+                                component="span"
+                                variant="subtitle2"
+                                sx={{
+                                  color: 'text.disabled',
+                                  textDecoration: 'line-through',
+                                }}
+                              >
+                                {fCurrency(original_price * item.qty)}
+                              </Typography>
+                            )}
+                          </Typography>
+                          {offerPercentage > 0 && (
+                            <Label variant="filled" color="error">
+                              {offerPercentage}% off
+                            </Label>
+                          )}
+                        </Box>
+                      </Grid>
+
+                      <Grid item xs={12} md={6} sx={{ textAlign: 'right' }}>
+                        <Box
+                          display="flex"
+                          alignItems="center"
+                          justifyContent={{
+                            xs: 'flex-start',
+                            md: 'flex-end',
+                          }}
+                          width="100%"
+                          borderRadius={1}
+                        >
+                          <Box display="flex" alignItems="center" bgcolor="#e9f2ff" sx={{ mr: 2 }}>
+                            <IconButton
+                              onClick={() => handleQuantityChange(item.id, -1)}
+                              aria-label="Decrease quantity"
+                              sx={{ color: 'primary' }}
+                            >
+                              <Iconify width={20} icon="mdi:minus" />
+                            </IconButton>
+                            <Typography
+                              variant="body2"
+                              sx={{ fontWeight: 'bold', color: 'black', padding: '0 10px' }}
+                            >
+                              {item.qty}
+                            </Typography>
+                            <IconButton
+                              onClick={() => handleQuantityChange(item.id, 1)}
+                              aria-label="Increase quantity"
+                              sx={{ color: 'primary' }}
+                            >
+                              <Iconify width={20} icon="mdi:plus" />
+                            </IconButton>
+                          </Box>
+
+                          <IconButton onClick={() => handlerRmoveCartItem(item.id)}>
+                            {removeLoadingId === item.id ? (
+                              <CircularProgress size={10} />
+                            ) : (
+                              <Iconify icon="mdi:trash-can-outline" width={20} height={20} />
+                            )}
+                          </IconButton>
+                        </Box>
+                      </Grid>
+                    </Grid>
+                  </Box>
                 </Box>
               </Box>
-              <Box textAlign="right">
-                <Box
-                  display="flex"
-                  alignItems="center"
-                  justifyContent="space-between"
-                  width="100%"
-                  bgcolor="#e9f2ff"
-                  borderRadius={1}
-                >
-                  <IconButton
-                    onClick={() => handleQuantityChange(item.id, -1)}
-                    aria-label="Decrease quantity"
-                    sx={{ color: 'primary', padding: '4px' }}
-                  >
-                    <Iconify width={20} icon="mdi:minus" />
-                  </IconButton>
-                  <Typography variant="body2" sx={{ fontWeight: 'bold', color: 'black',padding:"5px" }}>
-                    {item.qty}
-                  </Typography>
-                  <IconButton
-                    onClick={() => handleQuantityChange(item.id, 1)}
-                    aria-label="Increase quantity"
-                    sx={{ color: 'primary', padding: '4px' }}
-                  >
-                    <Iconify width={20} icon="mdi:plus" />
-                  </IconButton>
-                </Box>
-              </Box>
-              <IconButton>
-                <Iconify icon="eva:close-outline" width={20} height={20} />
-              </IconButton>
             </Box>
           );
         })}
