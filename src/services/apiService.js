@@ -115,3 +115,8 @@ export const getCartItems = () =>
     method: 'GET',
     headers: getAuthHeaders(),
   }).then(handleResponse);
+export const getOrders = () =>
+  fetch(`${BASE_URL}/orders`, {
+    method: 'GET',
+    headers: getAuthHeaders(),
+  }).then(handleResponse);

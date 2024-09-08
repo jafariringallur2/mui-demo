@@ -46,6 +46,7 @@ const LoginDrawer = ({ open, onClose }) => {
         const response = await verifyOtp(phoneNumber, otp);
         if (response.success) {
           localStorage.setItem('token', response.token);
+          localStorage.setItem('phoneNumber', phoneNumber);
           setAlert({ open: true, severity: 'success', message: 'Login successful!' });
           setTimeout(() => {
             onClose();
