@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { Grid, Typography, Box, Skeleton } from '@mui/material';
 import { getProducts } from 'src/services/apiService';
@@ -13,6 +14,9 @@ export default function ProductList({ limit, category, source }) {
   const [hasMore, setHasMore] = useState(true);
   const initialLoad = useRef(true);
   const loadingRef = useRef(false);
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const searchQuery = searchParams.get('search') || false;
 
   const loadProducts = useCallback(async () => {
     if (loadingRef.current || !hasMore || (source === 'home' && page > 1)) return;
@@ -21,7 +25,7 @@ export default function ProductList({ limit, category, source }) {
     loadingRef.current = true;
 
     try {
-      const data = await getProducts(limit, category, page);
+      const data = await getProducts(limit, category, page, searchQuery);
       if (data.success) {
         setProducts((prevProducts) => [
           ...prevProducts,
@@ -34,7 +38,7 @@ export default function ProductList({ limit, category, source }) {
             discount: product.offer,
           })),
         ]);
-        setTitle(`Exclusive ${data.head} Collection`);
+        setTitle(data.head);
         if (data.data.length < limit) {
           setHasMore(false);
         }
@@ -50,7 +54,19 @@ export default function ProductList({ limit, category, source }) {
       loadingRef.current = false;
       setPage((prevPage) => prevPage + 1);
     }
-  }, [hasMore, limit, category, page, source]);
+  }, [hasMore, limit, category, page, source, searchQuery]);
+
+  useEffect(() => {
+    setProducts([]);
+    setPage(1);
+    setHasMore(true);
+  }, [searchQuery, category]);
+
+  useEffect(() => {
+    if (page === 1 && hasMore) {
+      loadProducts();
+    }
+  }, [page, hasMore, loadProducts]);
 
   useEffect(() => {
     const onScroll = () => {
@@ -63,7 +79,6 @@ export default function ProductList({ limit, category, source }) {
     };
 
     window.addEventListener('scroll', onScroll);
-
     return () => window.removeEventListener('scroll', onScroll);
   }, [loadProducts]);
 

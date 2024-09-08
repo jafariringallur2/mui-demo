@@ -1,5 +1,5 @@
 import { useState } from 'react';
-
+import { useNavigate, useLocation } from 'react-router-dom';
 import Slide from '@mui/material/Slide';
 import Input from '@mui/material/Input';
 import Button from '@mui/material/Button';
@@ -7,9 +7,7 @@ import { styled } from '@mui/material/styles';
 import IconButton from '@mui/material/IconButton';
 import InputAdornment from '@mui/material/InputAdornment';
 import ClickAwayListener from '@mui/material/ClickAwayListener';
-
 import { bgBlur } from 'src/theme/css';
-
 import Iconify from 'src/components/iconify';
 
 // ----------------------------------------------------------------------
@@ -40,7 +38,10 @@ const StyledSearchbar = styled('div')(({ theme }) => ({
 // ----------------------------------------------------------------------
 
 export default function Searchbar() {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [open, setOpen] = useState(false);
+  const [searchValue, setSearchValue] = useState('');
 
   const handleOpen = () => {
     setOpen(!open);
@@ -48,6 +49,29 @@ export default function Searchbar() {
 
   const handleClose = () => {
     setOpen(false);
+  };
+
+  const handleSearch = () => {
+    if (searchValue) {
+      setOpen(false);
+      const params = new URLSearchParams(location.search);
+      params.set('search', searchValue);
+
+      navigate({
+        pathname: '/products',
+        search: params.toString(),
+      });
+    }
+  };
+
+  const handleInputChange = (event) => {
+    setSearchValue(event.target.value);
+  };
+
+  const handleKeyDown = (event) => {
+    if (event.key === 'Enter') {
+      handleSearch();
+    }
   };
 
   return (
@@ -62,6 +86,9 @@ export default function Searchbar() {
         <Slide direction="down" in={open} mountOnEnter unmountOnExit>
           <StyledSearchbar>
             <Input
+              value={searchValue}
+              onChange={handleInputChange}
+              onKeyDown={handleKeyDown}
               autoFocus
               fullWidth
               disableUnderline
@@ -76,7 +103,7 @@ export default function Searchbar() {
               }
               sx={{ mr: 1, fontWeight: 'fontWeightBold' }}
             />
-            <Button variant="contained" onClick={handleClose}>
+            <Button variant="contained" onClick={handleSearch}>
               Search
             </Button>
           </StyledSearchbar>
