@@ -14,6 +14,7 @@ import {
   ListItemText,
   ListItemButton,
   Chip,
+  Skeleton
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import Iconify from 'src/components/iconify';
@@ -45,6 +46,7 @@ const AccountView = () => {
   const navigate = useNavigate();
   const [selectedTab, setSelectedTab] = useState(0);
   const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
@@ -58,7 +60,7 @@ const AccountView = () => {
   }, [token, navigate]);
 
   useEffect(() => {
-    if (selectedTab === 0) {
+      setLoading(true);
       getOrders()
         .then((response) => {
           if (response.success) {
@@ -67,9 +69,11 @@ const AccountView = () => {
         })
         .catch((error) => {
           console.error('Failed to fetch orders:', error);
+        })
+        .finally(() => {
+          setLoading(false);
         });
-    }
-  }, [selectedTab]);
+  }, []);
 
   const handleTabChange = (event, newValue) => {
     setSelectedTab(newValue);
@@ -88,6 +92,32 @@ const AccountView = () => {
   const renderTabContent = () => {
     switch (selectedTab) {
       case 0:
+        if (loading) {
+          return (
+            <List>
+              {Array.from({ length: 3 }).map((_, index) => (
+                <ListItem key={index} disablePadding>
+                  <ListItemButton>
+                    <ListItemText
+                      primary={
+                        <Box display="flex" alignItems="center" gap={1}>
+                          <Skeleton variant="text" width={100} />
+                          <Skeleton variant="rectangular" width={50} height={15} />
+                        </Box>
+                      }
+                      secondary={
+                        <Box display="flex" alignItems="center" gap={1}>
+                          <Skeleton variant="text" width={80} />
+                          <Skeleton variant="text" width={80} />
+                        </Box>
+                      }
+                    />
+                  </ListItemButton>
+                </ListItem>
+              ))}
+            </List>
+          );
+        }
         return (
           <List>
             {orders.map((order) => (
@@ -126,9 +156,9 @@ const AccountView = () => {
           </List>
         );
       case 1:
-        return <Typography>Here are your saved products.</Typography>;
-      case 2:
         return <Typography>Here are your saved addresses.</Typography>;
+      case 2:
+        return <Typography>Here are your saved products.</Typography>;
       default:
         return <Typography>Select a tab to view content.</Typography>;
     }
@@ -170,12 +200,19 @@ const AccountView = () => {
       </Box>
 
       {/* Main Content - Tabs and Content */}
-      <Box sx={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row' }}>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: isMobile ? 'column' : 'row',
+          width: '100%',
+        }}
+      >
         {/* Tabs Section */}
         <Box
           sx={{
             flexGrow: 1,
             maxWidth: isMobile ? '100%' : 300,
+            width: isMobile ? '100%' : 'auto',
             borderRight: isMobile ? 'none' : `1px solid ${theme.palette.divider}`,
             mb: isMobile ? 2 : 0,
           }}
@@ -184,10 +221,13 @@ const AccountView = () => {
             value={selectedTab}
             onChange={handleTabChange}
             orientation={isMobile ? 'horizontal' : 'vertical'}
-            variant={isMobile ? 'scrollable' : 'fullWidth'}
+            variant="fullWidth"
             sx={{
               [`& .MuiTabs-indicator`]: {
                 backgroundColor: theme.palette.primary.main,
+              },
+              [`& .MuiTab-root`]: {
+                flex: isMobile ? 1 : 'auto', // Ensure tabs take full width on mobile
               },
             }}
           >
@@ -196,21 +236,32 @@ const AccountView = () => {
               iconPosition={isMobile ? 'top' : 'start'}
               label="Orders"
             />
-            <Tab
-              icon={<Iconify icon="mdi:heart" width={20} />} // Saved Products icon
-              iconPosition={isMobile ? 'top' : 'start'}
-              label="Favourites"
-            />
-            <Tab
+              <Tab
               icon={<Iconify icon="mdi:map-marker" width={20} />} // Saved Addresses icon
               iconPosition={isMobile ? 'top' : 'start'}
               label="Addresses"
             />
+            {!isMobile && (
+              <Tab
+                icon={<Iconify icon="mdi:heart" width={20} />} // Saved Products icon
+                iconPosition={isMobile ? 'top' : 'start'}
+                label="Favourites"
+              />
+            )}
+         
           </Tabs>
         </Box>
 
         {/* Tab Content Section */}
-        <Paper elevation={3} sx={{ flexGrow: 1, p: 2 }}>
+        <Paper
+          elevation={3}
+          sx={{
+            flexGrow: 1,
+            p: 2,
+            width: isMobile ? '100%' : 'auto',
+            maxWidth: isMobile ? '100%' : 'calc(100% - 300px)',
+          }}
+        >
           {renderTabContent()}
         </Paper>
       </Box>
