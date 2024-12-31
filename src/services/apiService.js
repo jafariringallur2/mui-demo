@@ -115,6 +115,15 @@ export const getCartItems = () =>
     method: 'GET',
     headers: getAuthHeaders(),
   }).then(handleResponse);
+
+export const applyCoupon = (coupon_code) => {
+  const body = { coupon_code };
+  return fetch(`${BASE_URL}/apply-coupon`, {
+    method: 'POST',
+    headers: getAuthHeaders(),
+    body: JSON.stringify(body),
+  }).then(handleResponse);
+};
 export const getOrders = () =>
   fetch(`${BASE_URL}/orders`, {
     method: 'GET',

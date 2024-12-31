@@ -15,7 +15,7 @@ import {
   Skeleton,
 } from '@mui/material';
 import Iconify from 'src/components/iconify';
-import { getCartItems } from 'src/services/apiService';
+import { getCartItems, applyCoupon } from 'src/services/apiService';
 import { useCart } from 'src/context/CartContext';
 
 const ShoppingCart = () => {
@@ -23,6 +23,10 @@ const ShoppingCart = () => {
   const [cartItems, setCartItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [removeLoadingId, setRemoveLoadingId] = useState(null);
+  const [couponCode, setCouponCode] = useState('');
+  const [applyLoading, setApplyLoading] = useState(false);
+  const [applyErrorMsg, setApplyErrorMsg] = useState('');
+  const [couponAppliedAmount, setCouponAppliedAmount] = useState(0);
 
   useEffect(() => {
     setLoading(true);
@@ -46,8 +50,10 @@ const ShoppingCart = () => {
     (sum, item) => sum + parseFloat(item.product.original_price) * parseInt(item.qty, 10),
     0
   );
-  const discount = totalPrice-totalSellingPrice; // Example static discount
-  const grandTotal = totalSellingPrice;
+  const discount = totalPrice - totalSellingPrice;
+
+  const subTotal = totalSellingPrice;
+  const grandTotal = subTotal - couponAppliedAmount;
 
   const handlerRmoveCartItem = async (id) => {
     try {
@@ -71,6 +77,38 @@ const ShoppingCart = () => {
         return item;
       })
     );
+  };
+
+  const handleApplyCoupon = async () => {
+    setApplyErrorMsg('');
+    setCouponAppliedAmount(0);
+    if (!couponCode.trim()) {
+      setApplyErrorMsg('Please enter a coupon code.');
+      return;
+    }
+
+    setApplyLoading(true);
+
+    try {
+      const response = await applyCoupon(couponCode);
+      if (!response.success) {
+        setApplyErrorMsg(response.errorMsg);
+        return;
+      }
+      if (response.data.min_cart_value > subTotal) {
+        setApplyErrorMsg(`This coupon requires a minimum cart value of ₹${response.data.min_cart_value}.`);
+        return;
+      }
+      if (response.data.discount_type === 1) {
+        setCouponAppliedAmount(response.data.discount);
+      } else {
+        setCouponAppliedAmount((response.data.discount / 100) * subTotal);
+      }
+    } catch (error) {
+      setApplyErrorMsg('An unexpected error occurred. Please try again.');
+    } finally {
+      setApplyLoading(false);
+    }
   };
 
   if (loading) {
@@ -348,14 +386,24 @@ const ShoppingCart = () => {
             variant="outlined"
             fullWidth
             margin="normal"
+            value={couponCode}
+            onChange={(e) => setCouponCode(e.target.value)}
+            error={!!applyErrorMsg}
+            helperText={applyErrorMsg}
             InputProps={{
               endAdornment: (
-                <Button variant="contained" color="error">
-                  Apply
+                <Button
+                  variant="contained"
+                  color="error"
+                  onClick={handleApplyCoupon}
+                  disabled={applyLoading}
+                >
+                  {applyLoading ? <CircularProgress size={24} color="inherit" /> : 'Apply'}
                 </Button>
               ),
             }}
           />
+
           <Box mt={3}>
             <Grid container spacing={2} mb={1}>
               <Grid item xs={6}>
@@ -378,9 +426,19 @@ const ShoppingCart = () => {
                 <Typography>Sub Total:</Typography>
               </Grid>
               <Grid item xs={6} textAlign="right">
-                <Typography>₹{grandTotal.toFixed(2)}</Typography>
+                <Typography>₹{subTotal.toFixed(2)}</Typography>
               </Grid>
             </Grid>
+            {couponAppliedAmount > 0 && (
+            <Grid container spacing={2} mb={1}>
+              <Grid item xs={6}>
+                <Typography>Coupon Applied:</Typography>
+              </Grid>
+              <Grid item xs={6} textAlign="right">
+                <Typography color="green">-₹{couponAppliedAmount.toFixed(2)}</Typography>
+              </Grid>
+            </Grid>
+            )}
             <Grid container spacing={2} mt={2}>
               <Grid item xs={6}>
                 <Typography variant="h6">Grand Total:</Typography>
