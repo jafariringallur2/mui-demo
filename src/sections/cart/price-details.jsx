@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Box, Typography, Button, CircularProgress, TextField, Grid } from '@mui/material';
 import { applyCoupon } from 'src/services/apiService';
 
-export default function PriceDetails({ totalPrice, totalSellingPrice }) {
+export default function PriceDetails({ totalPrice, totalSellingPrice,setGrandTotal }) {
   const [couponCode, setCouponCode] = useState('');
   const [applyLoading, setApplyLoading] = useState(false);
   const [applyErrorMsg, setApplyErrorMsg] = useState('');
@@ -12,6 +12,7 @@ export default function PriceDetails({ totalPrice, totalSellingPrice }) {
   const discount = totalPrice - totalSellingPrice;
   const subTotal = totalSellingPrice;
   const grandTotal = subTotal - couponAppliedAmount;
+  setGrandTotal(grandTotal);
 
 
   const handleApplyCoupon = async () => {
@@ -50,7 +51,7 @@ export default function PriceDetails({ totalPrice, totalSellingPrice }) {
 
  
   return (
-    <Box padding={3} boxShadow={3} borderRadius={2} mt={4}>
+    <Box padding={3} boxShadow={3} borderRadius={2} mt={{sm:6,xs:1}}>
       <Typography variant="h6" gutterBottom>
         Price Details
       </Typography>
@@ -129,6 +130,7 @@ export default function PriceDetails({ totalPrice, totalSellingPrice }) {
 PriceDetails.propTypes = {
     totalPrice: PropTypes.number,
     totalSellingPrice: PropTypes.number,
+    setGrandTotal: PropTypes.func
   };
   
   PriceDetails.defaultProps = {

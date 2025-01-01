@@ -33,7 +33,7 @@ export default function CartItemsList ({ cartItems, onQuantityChange, onRemoveIt
             alignItems="center"
             justifyContent="space-between"
             borderRadius={1}
-            mb={3}
+            mb={1}
             sx={{
               flexDirection: {
                 xs: 'column',

@@ -6,6 +6,7 @@ import PriceDetails from './price-details';
 import CartItemsList from './CartItemsList';
 import CartSkelton from './CartSkelton';
 import DeliveryAddress from './DeliveryAddress';
+import Payment from './payment';
 
 const steps = ['Items', 'Address', 'Payment'];
 
@@ -16,10 +17,19 @@ const ShoppingCart = () => {
   const [removeLoadingId, setRemoveLoadingId] = useState(null);
   const [activeStep, setActiveStep] = useState(0);
   const [selectedAddress, setSelectedAddress] = useState(null);
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
+  const [grandTotalAmount, setGrandTotal] = useState(0);
 
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
+
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
+  }, [activeStep]);
 
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
@@ -72,6 +82,23 @@ const ShoppingCart = () => {
     );
   };
 
+  let buttonText = 'Continue';
+  let buttonDisabled = false;
+
+  if (activeStep === 0) {
+    buttonText = 'Place Order';
+  } else if (activeStep === 1) {
+    buttonText = 'Continue';
+  } else if (activeStep === 2) {
+    if (!selectedPaymentMethod) {
+      buttonDisabled = true;
+    } else if (selectedPaymentMethod === 'online') {
+      buttonText = `Pay ₹${grandTotalAmount}`;
+    } else if (selectedPaymentMethod === 'cod') {
+      buttonText = 'Confirm';
+    }
+  }
+
   if (loading) {
     return <CartSkelton />;
   }
@@ -97,14 +124,37 @@ const ShoppingCart = () => {
             removeLoadingId={removeLoadingId}
           />
         )}
-          {activeStep === 1 && (
+        {activeStep === 1 && (
           <DeliveryAddress
-          selectedAddressValue={selectedAddress}
-          onAddressSelect={setSelectedAddress}
+            selectedAddressValue={selectedAddress}
+            onAddressSelect={setSelectedAddress}
           />
         )}
-
-        <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
+        {activeStep === 2 && (
+          <Payment
+            SelectedPaymentMethod={selectedPaymentMethod}
+            OnPaymentSelect={setSelectedPaymentMethod}
+          />
+        )}
+      </Grid>
+      <Grid item xs={12} md={4}>
+        <PriceDetails totalPrice={totalPrice} totalSellingPrice={totalSellingPrice} setGrandTotal={setGrandTotal} />
+      </Grid>
+      <Grid item xs={12} md={8}>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'row',
+            width: 'inherit',
+            position: { xs: 'fixed', sm: 'relative' },
+            bottom: { xs: 57, sm: 'auto' },
+            zIndex: 10,
+            left: 0,
+            right: 0,
+            backgroundColor: 'white',
+            padding: { xs: '8px', sm: '0' },
+          }}
+        >
           <Button
             color="inherit"
             variant="contained"
@@ -112,17 +162,20 @@ const ShoppingCart = () => {
             onClick={handleBack}
             sx={{ mr: 1, width: '50%' }}
           >
-            Back
+            Cancel
           </Button>
           <Box sx={{ flex: '1 1 auto' }} />
 
-          <Button variant="contained" color="error" onClick={handleNext} sx={{ width: '50%' }}  disabled={activeStep === 1 && !selectedAddress}>
-            {activeStep === 0 ? 'Place Order' : 'Continue'}
+          <Button
+            variant="contained"
+            color="error"
+            onClick={handleNext}
+            sx={{ width: '50%' }}
+            disabled={buttonDisabled || (activeStep === 1 && !selectedAddress)}
+          >
+            {buttonText}
           </Button>
         </Box>
-      </Grid>
-      <Grid item xs={12} md={4}>
-        <PriceDetails totalPrice={totalPrice} totalSellingPrice={totalSellingPrice} />
       </Grid>
     </Grid>
   );
