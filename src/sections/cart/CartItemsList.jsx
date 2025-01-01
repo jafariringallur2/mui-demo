@@ -16,8 +16,8 @@ import Iconify from 'src/components/iconify';
 
 export default function CartItemsList ({ cartItems, onQuantityChange, onRemoveItem, removeLoadingId }) {
   return (
-    <Box p={2}>
-   <Typography variant="h6" gutterBottom>
+    <Box>
+   <Typography variant="h6" gutterBottom p={2}>
         Cart Items
       </Typography>
       {cartItems.map((item) => {
