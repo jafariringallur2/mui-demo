@@ -143,3 +143,20 @@ export const getOrders = () =>
     method: 'GET',
     headers: getAuthHeaders(),
   }).then(handleResponse);
+
+  export const createOnlinePayment = (data) => {
+    const body = data;
+    return fetch(`${BASE_URL}/create-payment`, {
+      method: 'POST',
+      headers: getAuthHeaders(),
+      body: JSON.stringify(body),
+    }).then(handleResponse);
+  };
+  export const createOrder = (data) => {
+    const body = data;
+    return fetch(`${BASE_URL}/order`, {
+      method: 'POST',
+      headers: getAuthHeaders(),
+      body: JSON.stringify(body),
+    }).then(handleResponse);
+  };

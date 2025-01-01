@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Box, Typography, Button, CircularProgress, TextField, Grid } from '@mui/material';
 import { applyCoupon } from 'src/services/apiService';
 
-export default function PriceDetails({ totalPrice, totalSellingPrice,setGrandTotal }) {
+export default function PriceDetails({ totalPrice, totalSellingPrice,setGrandTotal,setCouponCodeValue }) {
   const [couponCode, setCouponCode] = useState('');
   const [applyLoading, setApplyLoading] = useState(false);
   const [applyErrorMsg, setApplyErrorMsg] = useState('');
@@ -12,7 +12,10 @@ export default function PriceDetails({ totalPrice, totalSellingPrice,setGrandTot
   const discount = totalPrice - totalSellingPrice;
   const subTotal = totalSellingPrice;
   const grandTotal = subTotal - couponAppliedAmount;
-  setGrandTotal(grandTotal);
+
+  useEffect(() => {
+    setGrandTotal(grandTotal);
+  }, [grandTotal, setGrandTotal]);
 
 
   const handleApplyCoupon = async () => {
@@ -49,6 +52,11 @@ export default function PriceDetails({ totalPrice, totalSellingPrice,setGrandTot
     }
   };
 
+  const handleCouponCodeChange = (e) => {
+    setCouponCode(e.target.value);
+    setCouponCodeValue(e.target.value);  // Update the parent state
+  };
+
  
   return (
     <Box padding={3} boxShadow={3} borderRadius={2} mt={{sm:6,xs:1}}>
@@ -61,7 +69,7 @@ export default function PriceDetails({ totalPrice, totalSellingPrice,setGrandTot
         fullWidth
         margin="normal"
         value={couponCode}
-        onChange={(e) => setCouponCode(e.target.value)}
+        onChange={handleCouponCodeChange}
         error={!!applyErrorMsg}
         helperText={applyErrorMsg}
         InputProps={{
@@ -130,7 +138,8 @@ export default function PriceDetails({ totalPrice, totalSellingPrice,setGrandTot
 PriceDetails.propTypes = {
     totalPrice: PropTypes.number,
     totalSellingPrice: PropTypes.number,
-    setGrandTotal: PropTypes.func
+    setGrandTotal: PropTypes.func,
+    setCouponCodeValue: PropTypes.func
   };
   
   PriceDetails.defaultProps = {

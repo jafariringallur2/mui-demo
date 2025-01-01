@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Button, Grid, Stepper, Step, StepLabel } from '@mui/material';
-import { getCartItems } from 'src/services/apiService';
+import { Alert, Box, Button, Grid, Stepper, Step, StepLabel } from '@mui/material';
+import { getCartItems, createOnlinePayment, createOrder } from 'src/services/apiService';
 import { useCart } from 'src/context/CartContext';
 import PriceDetails from './price-details';
 import CartItemsList from './CartItemsList';
@@ -19,9 +19,85 @@ const ShoppingCart = () => {
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
   const [grandTotalAmount, setGrandTotal] = useState(0);
+  const [couponCode, setCouponCodeValue] = useState('');
+  const [apiError, setApiError] = useState('');
 
-  const handleNext = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+  const loadRazorpayScript = () =>
+    new Promise((resolve, reject) => {
+      const script = document.createElement('script');
+      script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+      script.async = true;
+      script.onload = () => resolve(true);
+      script.onerror = () => reject(new Error('Razorpay SDK failed to load.'));
+      document.body.appendChild(script);
+    });
+
+  const handleNext = async () => {
+    if (activeStep === 2) {
+      const items = cartItems.map((item) => ({
+        product_id: item.product.id,
+        size: item.size,
+        qty: item.qty,
+      }));
+      const payloadData = {
+        items,
+        address_id: selectedAddress,
+        payment_method: selectedPaymentMethod,
+        coupon_code: couponCode,
+      };
+
+      await createOnlinePaymentAPI(payloadData);
+    } else {
+      setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    }
+  };
+
+  const createOnlinePaymentAPI = async (payload) => {
+    try {
+      const scriptLoaded = await loadRazorpayScript();
+      if (!scriptLoaded) {
+        setApiError('Razorpay SDK failed to load.');
+        return;
+      }
+
+      const response = await createOnlinePayment(payload);
+      if (response.success === false) {
+        setApiError(response.errorMsg);
+        return;
+      }
+
+      const options = {
+        key: 'rzp_test_DkzvuWlQIShYqc',
+        amount: response.payment.amount,
+        currency: 'INR',
+        name: response.payment.business_name,
+        description: `Order ID: ${response.payment.order_id}`,
+        image: response.payment.business_logo,
+        order_id: response.payment.order_id,
+        prefill: {
+          contact: response.payment.customer_phone,
+        },
+        handler: async (data) => {
+          if (data.razorpay_payment_id) {
+            const updatedPayload = {
+              ...payload,
+              razorpay_payment_id: data.razorpay_payment_id,
+              razorpay_order_id: data.razorpay_order_id,
+            };
+            const orderResponse = await createOrder(updatedPayload);
+            console.log(orderResponse);
+          } else {
+            console.error('Payment failed');
+          }
+        },
+      };
+
+      const rzp1 = new window.Razorpay(options); // Use `window.Razorpay` here
+      rzp1.open();
+    } catch (error) {
+      console.error('Error during payment:', error);
+      setApiError('Something went wrong with the payment.');
+    }
   };
 
   useEffect(() => {
@@ -138,7 +214,12 @@ const ShoppingCart = () => {
         )}
       </Grid>
       <Grid item xs={12} md={4}>
-        <PriceDetails totalPrice={totalPrice} totalSellingPrice={totalSellingPrice} setGrandTotal={setGrandTotal} />
+        <PriceDetails
+          totalPrice={totalPrice}
+          totalSellingPrice={totalSellingPrice}
+          setGrandTotal={setGrandTotal}
+          setCouponCodeValue={setCouponCodeValue}
+        />
       </Grid>
       <Grid item xs={12} md={8}>
         <Box
@@ -177,6 +258,11 @@ const ShoppingCart = () => {
           </Button>
         </Box>
       </Grid>
+      {apiError && (
+        <Alert severity="error" sx={{ mb: 2, mt: 2 }}>
+          {apiError}
+        </Alert>
+      )}
     </Grid>
   );
 };
