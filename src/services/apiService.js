@@ -124,6 +124,20 @@ export const applyCoupon = (coupon_code) => {
     body: JSON.stringify(body),
   }).then(handleResponse);
 };
+export const saveCustomerAddresses = (address_data) => {
+  const body = address_data;
+  return fetch(`${BASE_URL}/customer-address`, {
+    method: 'POST',
+    headers: getAuthHeaders(),
+    body: JSON.stringify(body),
+  }).then(handleResponse);
+};
+export const getCustomerAddresses = () =>
+  fetch(`${BASE_URL}/customer-address`, {
+    method: 'GET',
+    headers: getAuthHeaders(),
+  }).then(handleResponse);
+
 export const getOrders = () =>
   fetch(`${BASE_URL}/orders`, {
     method: 'GET',
