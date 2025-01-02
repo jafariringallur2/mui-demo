@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Alert, Box, Button, Grid, Stepper, Step, StepLabel } from '@mui/material';
+import { Alert, Box, Button, Grid, Stepper, Step, StepLabel, CircularProgress } from '@mui/material';
 import { getCartItems, createOnlinePayment, createOrder } from 'src/services/apiService';
 import { useCart } from 'src/context/CartContext';
 import PriceDetails from './price-details';
@@ -7,6 +7,7 @@ import CartItemsList from './CartItemsList';
 import CartSkelton from './CartSkelton';
 import DeliveryAddress from './DeliveryAddress';
 import Payment from './payment';
+import OrderSuccessDialog from './order-success';
 
 const steps = ['Items', 'Address', 'Payment'];
 
@@ -21,6 +22,9 @@ const ShoppingCart = () => {
   const [grandTotalAmount, setGrandTotal] = useState(0);
   const [couponCode, setCouponCodeValue] = useState('');
   const [apiError, setApiError] = useState('');
+  const [paymentLoading, setPaymentLoading] = useState(false);
+  const [orderSuccess, setOrderSuccess] = useState(false);
+
 
   const loadRazorpayScript = () =>
     new Promise((resolve, reject) => {
@@ -34,6 +38,7 @@ const ShoppingCart = () => {
 
   const handleNext = async () => {
     if (activeStep === 2) {
+      setPaymentLoading(true);
       const items = cartItems.map((item) => ({
         product_id: item.product.id,
         size: item.size,
@@ -46,7 +51,11 @@ const ShoppingCart = () => {
         coupon_code: couponCode,
       };
 
-      await createOnlinePaymentAPI(payloadData);
+      if(selectedPaymentMethod === "online"){
+        await createOnlinePaymentAPI(payloadData);
+      }else{
+        await createOrderAPI(payloadData);
+      }
     } else {
       setActiveStep((prevActiveStep) => prevActiveStep + 1);
     }
@@ -84,8 +93,7 @@ const ShoppingCart = () => {
               razorpay_payment_id: data.razorpay_payment_id,
               razorpay_order_id: data.razorpay_order_id,
             };
-            const orderResponse = await createOrder(updatedPayload);
-            console.log(orderResponse);
+            await createOrderAPI(updatedPayload);
           } else {
             console.error('Payment failed');
           }
@@ -100,6 +108,15 @@ const ShoppingCart = () => {
     }
   };
 
+  const createOrderAPI = async (payload) => {
+    const orderResponse = await createOrder(payload)
+    setPaymentLoading(false);
+    if (orderResponse.success === false) {
+      setApiError(orderResponse.errorMsg);
+    }else{
+      setOrderSuccess(true);
+    }
+  };
   useEffect(() => {
     window.scrollTo({
       top: 0,
@@ -172,6 +189,10 @@ const ShoppingCart = () => {
       buttonText = `Pay ₹${grandTotalAmount}`;
     } else if (selectedPaymentMethod === 'cod') {
       buttonText = 'Confirm';
+    }
+
+    if(paymentLoading){
+      buttonDisabled = true;
     }
   }
 
@@ -255,6 +276,7 @@ const ShoppingCart = () => {
             disabled={buttonDisabled || (activeStep === 1 && !selectedAddress)}
           >
             {buttonText}
+            {paymentLoading ? <CircularProgress size={24} sx={{ color: 'white' }} /> : ''}
           </Button>
         </Box>
       </Grid>
@@ -263,6 +285,9 @@ const ShoppingCart = () => {
           {apiError}
         </Alert>
       )}
+       <OrderSuccessDialog
+        open={orderSuccess}
+      />
     </Grid>
   );
 };

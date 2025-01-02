@@ -57,7 +57,7 @@ export const CartProvider = ({ children }) => {
   }, [fetchCartCount]);
 
   // Memoize the context value to avoid unnecessary re-renders
-  const contextValue = useMemo(() => ({ cartCount, addToCart,removeCartItem, cartLoading }), [cartCount, addToCart,removeCartItem, cartLoading]);
+  const contextValue = useMemo(() => ({ cartCount, addToCart,removeCartItem, cartLoading, fetchCartCount }), [cartCount, addToCart,removeCartItem, cartLoading, fetchCartCount]);
 
   return (
     <CartContext.Provider value={contextValue}>
