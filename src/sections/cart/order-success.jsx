@@ -1,19 +1,23 @@
-import React from "react";
+import {React} from "react";
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
 import { Dialog, Box, Typography, Button } from "@mui/material";
 import { useCart } from 'src/context/CartContext';
 
-export default function OrderSuccessDialog({ open }) {
+export default function OrderSuccessDialog({ open,orderId }) {
   const { fetchCartCount } = useCart();
-
-  const navigate = useNavigate(); // Initialize navigate
+  const navigate = useNavigate();
 
   const handleContinueShopping = () => {
     fetchCartCount();
-    navigate("/"); // Navigate to the home route
+    navigate("/"); 
   };
 
+  const handleTrackOrder = () => {
+    fetchCartCount();
+    window.open(`/order/${orderId}`, '_blank');
+    navigate("/"); 
+  };
   return (
     <Dialog open={open}>
       <Box
@@ -55,6 +59,7 @@ export default function OrderSuccessDialog({ open }) {
             variant="outlined"
             color="success"
             sx={{ textTransform: "none", fontWeight: "bold" }}
+            onClick={handleTrackOrder}
           >
             Track Your Order
           </Button>
@@ -62,7 +67,7 @@ export default function OrderSuccessDialog({ open }) {
             variant="outlined"
             color="primary"
             sx={{ textTransform: "none", fontWeight: "bold" }}
-            onClick={handleContinueShopping} // Add click handler
+            onClick={handleContinueShopping}
           >
             Continue Shopping
           </Button>
@@ -74,4 +79,5 @@ export default function OrderSuccessDialog({ open }) {
 
 OrderSuccessDialog.propTypes = {
   open: PropTypes.bool,
+  orderId: PropTypes.string,
 };

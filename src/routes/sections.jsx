@@ -10,6 +10,7 @@ export const CartPage = lazy(() => import('src/pages/cart'));
 export const AccountPage = lazy(() => import('src/pages/account'));
 export const ProductDetailsPage = lazy(() => import('src/pages/ProductDetails'));
 export const Page404 = lazy(() => import('src/pages/page-not-found'));
+export const OrderTrackingPage = lazy(() => import('src/pages/order-tracking'));
 
 // ----------------------------------------------------------------------
 
@@ -35,6 +36,10 @@ export default function Router() {
     {
       path: '404',
       element: <Page404 />,
+    },
+    {
+      path: 'order/:id',
+      element: <OrderTrackingPage />,
     },
     {
       path: '*',

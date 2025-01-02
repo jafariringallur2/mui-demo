@@ -160,3 +160,13 @@ export const getOrders = () =>
       body: JSON.stringify(body),
     }).then(handleResponse);
   };
+
+  export const getOrderDetails = (id) =>
+  fetch(`${BASE_URL}/order/${id}`, {
+    method: 'GET',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      'BusinessUrl': BusinessUrl,
+    },
+  }).then(handleResponse);

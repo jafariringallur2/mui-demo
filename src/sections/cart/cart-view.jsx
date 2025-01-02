@@ -24,6 +24,7 @@ const ShoppingCart = () => {
   const [apiError, setApiError] = useState('');
   const [paymentLoading, setPaymentLoading] = useState(false);
   const [orderSuccess, setOrderSuccess] = useState(false);
+  const [orderId, setOrderId] = useState('');
 
 
   const loadRazorpayScript = () =>
@@ -115,6 +116,7 @@ const ShoppingCart = () => {
       setApiError(orderResponse.errorMsg);
     }else{
       setOrderSuccess(true);
+      setOrderId(orderResponse.order_id);
     }
   };
   useEffect(() => {
@@ -287,6 +289,7 @@ const ShoppingCart = () => {
       )}
        <OrderSuccessDialog
         open={orderSuccess}
+        orderId={orderId}
       />
     </Grid>
   );
