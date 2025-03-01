@@ -1,20 +1,39 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import Box from '@mui/material/Box';
+import { getHeaderAPI } from 'src/services/apiService';
 
 import Nav from './nav';
 import Main from './main';
 import Header from './header';
 import Footer from './footer';
 
+
 // ----------------------------------------------------------------------
 
 export default function DashboardLayout({ children }) {
   const [openNav, setOpenNav] = useState(false);
+  const [businessInfo, setBusinessInfo] = useState([]);
+  const [headerLoading, setHeaderLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchHeaderData = async () => {
+      try {
+        const data = await getHeaderAPI();
+        setBusinessInfo(data.businessInfo);
+      } catch (error) {
+        console.error('Failed to fetch items:', error);
+      }finally {
+        setHeaderLoading(false);
+      }
+    };
+
+    fetchHeaderData();
+  }, []);
 
   return (
     <>
-      <Header onOpenNav={() => setOpenNav(true)} />
+      <Header onOpenNav={() => setOpenNav(true)} businessDetails={businessInfo} headerLoading={headerLoading} />
 
       <Box
         sx={{
@@ -31,7 +50,7 @@ export default function DashboardLayout({ children }) {
       </Box>
 
       {/* Footer outside the flexbox to make it stick to bottom */}
-      <Footer />
+      <Footer businessDetails={businessInfo} headerLoading={headerLoading} />
     </>
   );
 }

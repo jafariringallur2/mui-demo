@@ -1,18 +1,21 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Container, Grid, Typography, Box, Link } from '@mui/material';
 
-export default function Header() {
+export default function Footer({businessDetails, headerLoading}) {
   return (
     <Box sx={{ backgroundColor: '#fff', py: 4 }}>
       <Container maxWidth="lg">
         <Grid container spacing={4}>
           <Grid item xs={12} md={3}>
             <Box display="flex" alignItems="center" mb={2}>
+            { !headerLoading ? (
               <img
-                src="https://www.boat-lifestyle.com/cdn/shop/files/boAt_logo_small_3067da8c-a83b-46dd-b28b-6ef1e16ccd17_small.svg"
+               src={businessDetails.business_logo}
                 alt="logo"
                 style={{ height: '60px', marginRight: '8px' }}
               />
+            ): null }
             </Box>
           </Grid>
 
@@ -55,11 +58,11 @@ export default function Header() {
               Contact Us
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              70 Washington Square South, New York, NY 10012, United States
+              {businessDetails.business_address_line_1}, {businessDetails.business_place}, {businessDetails.business_city}
             </Typography>
 
             <Typography variant="body2" color="text.secondary">
-              Phone: +1 1123 456 780
+              Phone: {businessDetails.business_phone}
             </Typography>
           </Grid>
           
@@ -78,3 +81,10 @@ export default function Header() {
     </Box>
   );
 }
+Footer.propTypes = {
+  businessDetails: PropTypes.oneOfType([
+    PropTypes.object,
+    PropTypes.array
+  ]),  
+  headerLoading: PropTypes.bool,
+};

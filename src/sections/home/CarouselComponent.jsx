@@ -1,15 +1,37 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-
 import { Box, useMediaQuery, useTheme } from "@mui/material";
+import { getSliders } from "src/services/apiService";
 
 import './app.css';
 
 const CarouselComponent = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+
+  const [slides, setSlides] = useState([]);
+
+  useEffect(() => {
+    const fetchSliders = async () => {
+      try {
+        const data = await getSliders();
+        if (data) {
+          const { mobile, desktop } = data;
+          if (isMobile) {
+            setSlides(mobile || []);
+          } else {
+            setSlides(desktop || []);
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching sliders:", error);
+      }
+    };
+
+    fetchSliders();
+  }, [isMobile]);
 
   const settings = {
     dots: true,
@@ -35,81 +57,48 @@ const CarouselComponent = () => {
         </ul>
       </Box>
     ),
-    responsive: [
-      {
-        breakpoint: 768, // Tablet or mobile view
-        settings: {
-          slidesToShow: 1,
-          slidesToScroll: 1,
-        },
-      },
-      {
-        breakpoint: 1200, // Desktop view
-        settings: {
-          slidesToShow: 2,
-          slidesToScroll: 1,
-        },
-      },
-    ],
   };
 
-  const slides = [
-    {
-      desktopImage: "https://www.boat-lifestyle.com/cdn/shop/files/S750_WEB_1600x.jpg",
-      mobileImage: "https://www.boat-lifestyle.com/cdn/shop/files/S750-MOB_600x.jpg",
-      link: "#cat",
-    },
-    {
-      desktopImage: "https://www.boat-lifestyle.com/cdn/shop/files/MONSOON-SALE-WEB_1_1440x.jpg",
-      mobileImage: "https://www.boat-lifestyle.com/cdn/shop/files/MONSOON-SALE-MOB_1_600x.jpg",
-      link: "#cat",
-    },
-  ];
+  if (slides.length === 0) return null;
 
   return (
-      <Box
-        sx={{
-          width: "100%",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          padding: {xs :"7px",sm : "1px"},
-        }}
-      >
-        <Box sx={{ width:{ xs :"93%" , sm: "100%"}, maxWidth: "1200px" }}> {/* Adjust maxWidth for desktop */}
-          <Slider {...settings}>
-            {slides.map((slide, index) => (
-              <Box
-                key={index}
-                sx={{
-                  backgroundImage: `url(${isMobile ? slide.mobileImage : slide.desktopImage})`,
-                  backgroundSize: "cover",
-                  backgroundPosition: "center",
-                  borderRadius: "16px",
-                  overflow: "hidden",
-                  position: "relative",
-                  padding: "20px",
-                  boxSizing: "border-box",
-                  height: {xs :"400px",sm:"350px"},
-                }}
-              >
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
-                    alignItems: "flex-start",
-                    height: "100%",
-                    color: "white",
-                  }}
-                >
-                  {/* Add any content here, like buttons or text */}
-                </Box>
-              </Box>
-            ))}
-          </Slider>
-        </Box>
+    <Box
+      sx={{
+        width: "100%",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        padding: { xs: "7px", sm: "1px" },
+      }}
+    >
+      <Box sx={{ width: { xs: "93%", sm: "100%" }, maxWidth: "1200px" }}>
+        <Slider {...settings}>
+          {slides.map((slide, index) => (
+            <Box
+              key={index}
+              component="div"
+              onClick={() => {
+                if (slide.link) {
+                  window.open(slide.link, "_blank"); // Open in a new tab if link exists
+                }
+              }}
+              sx={{
+                backgroundImage: `url(${slide.image})`,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+                borderRadius: "16px",
+                overflow: "hidden",
+                position: "relative",
+                padding: "20px",
+                boxSizing: "border-box",
+                height: { xs: "400px", sm: "350px" },
+                cursor: slide.link ? "pointer" : "default", // Show pointer cursor only if clickable
+              }}
+            />
+          ))}
+        </Slider>
       </Box>
+    </Box>
   );
 };
 

@@ -16,7 +16,7 @@ import { HEADER } from './config-layout';
 import Searchbar from './common/searchbar';
 import LoginDialog from './LoginDialog'; // Import the dialog component
 
-export default function Header({ onOpenNav }) {
+export default function Header({ onOpenNav, businessDetails, headerLoading }) {
   const { cartCount } = useCart();
   const theme = useTheme();
   const lgUp = useResponsive('up', 'lg');
@@ -65,13 +65,24 @@ export default function Header({ onOpenNav }) {
             justifyContent: 'space-between',
           }}
         >
-          <Box
-            component="img"
-            src="https://www.boat-lifestyle.com/cdn/shop/files/boAt_logo_small_3067da8c-a83b-46dd-b28b-6ef1e16ccd17_small.svg"
-            alt="Logo"
-            sx={{ height: { xs: '50px', sm: '60px' },cursor:"pointer" }}
-            onClick={() => navigate('/')}
-          />
+         {
+            !headerLoading ? (
+              <Box
+                component="img"
+                src={businessDetails.business_logo}
+                alt="Logo"
+                sx={{ height: { xs: '50px', sm: '60px' }, cursor: "pointer" }}
+                onClick={() => navigate('/')}
+              />
+            ) : (
+              <Box
+                component="div"
+                sx={{ height: { xs: '50px', sm: '60px' }, cursor: "pointer" }}
+                onClick={() => navigate('/')}
+              />
+            )
+          }
+
 
           <Stack direction="row" alignItems="center" spacing={1}>
             <Searchbar />
@@ -101,4 +112,9 @@ export default function Header({ onOpenNav }) {
 
 Header.propTypes = {
   onOpenNav: PropTypes.func,
+  businessDetails: PropTypes.oneOfType([
+    PropTypes.object,
+    PropTypes.array
+  ]),  
+  headerLoading: PropTypes.bool,
 };

@@ -4,6 +4,7 @@ import { Outlet, Navigate, useRoutes } from 'react-router-dom';
 import DashboardLayout from 'src/layouts/dashboard';
 
 export const IndexPage = lazy(() => import('src/pages/app'));
+export const CategoriesPage = lazy(() => import('src/pages/categories'));
 export const CategoryProductsPage = lazy(() => import('src/pages/category-products'));
 export const AllProducts = lazy(() => import('src/pages/products'));
 export const CartPage = lazy(() => import('src/pages/cart'));
@@ -26,6 +27,7 @@ export default function Router() {
       ),
       children: [
         { element: <IndexPage />, index: true },
+        { path: 'categories', element: <CategoriesPage /> },
         { path: 'categories/:id', element: <CategoryProductsPage /> },
         { path: 'products', element: <AllProducts /> },
         { path: 'product/:id', element: <ProductDetailsPage /> },

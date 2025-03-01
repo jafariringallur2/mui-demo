@@ -1,18 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Card, Grid, Button, CardMedia, Typography, Skeleton } from '@mui/material';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import { useNavigate } from 'react-router-dom';
 import { getCategories } from 'src/services/apiService';
 
 const Categories = () => {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate(); // Initialize the useNavigate hook
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchCategories = async () => {
       try {
         const data = await getCategories();
-        setCategories(data.data.slice(0, 6));
+        setCategories(data.slice(0, 6));
       } catch (error) {
         console.error('Failed to fetch items:', error);
       } finally {
@@ -24,7 +24,11 @@ const Categories = () => {
   }, []);
 
   const handleCategoryClick = (id) => {
-    navigate(`/categories/${id}`); // Navigate to the category page using the category id
+    navigate(`/categories/${id}`); 
+  };
+
+  const handleSeeAllClick = (id) => {
+    navigate(`/categories`); 
   };
 
   return (
@@ -33,7 +37,7 @@ const Categories = () => {
         <Typography variant="h5" fontWeight="bold">
           Categories
         </Typography>
-        <Button variant="text" sx={{ color: 'red' }}>
+        <Button variant="text" sx={{ color: 'red' }} onClick={() => handleSeeAllClick()}>
           See All
         </Button>
       </Box>

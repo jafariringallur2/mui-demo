@@ -10,7 +10,7 @@ const navConfig = [
   },
   {
     title: 'category',
-    path: '/category',
+    path: '/categories',
     icon: <Iconify width={24} icon="mdi:apps-box" />,
   },
   {

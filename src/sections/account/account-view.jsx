@@ -23,7 +23,8 @@ import { getOrders } from 'src/services/apiService';
 const getStatusBadge = (status) => {
   const statusColors = {
     Pending: 'warning',
-    Canceled: 'error',
+    Rejected: 'error',
+    Accepted: 'info',
     Shipped: 'info',
     Delivered: 'success',
   };
@@ -125,12 +126,12 @@ const AccountView = () => {
                 key={order.id}
                 disablePadding
                 secondaryAction={
-                  <IconButton onClick={() => handleOrderClick(order.id)}>
+                  <IconButton onClick={() => handleOrderClick(order.hashid)}>
                     <Iconify icon="mdi:arrow-right" width={20} />
                   </IconButton>
                 }
               >
-                <ListItemButton onClick={() => handleOrderClick(order.id)}>
+                <ListItemButton onClick={() => handleOrderClick(order.hashid)}>
                   <ListItemText
                     primary={
                       <Box display="flex" alignItems="center" gap={1}>

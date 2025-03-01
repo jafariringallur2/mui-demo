@@ -1,14 +1,37 @@
 const BASE_URL = 'https://web.botire.in/api';
 const BusinessUrl = 'boat';
+// const BASE_URL = 'http://127.0.0.1:8000/api';
+// const BusinessUrl = 'botire-digital-solutions';
 const getAuthToken = () => localStorage.getItem('token');
 
+const cacheData = (key, version, data) => {
+  localStorage.setItem(key, JSON.stringify({ version, data }));
+};
+
+const getCachedData = (key) => {
+  const cached = localStorage.getItem(key);
+  return cached ? JSON.parse(cached) : null;
+};
+
+const updateCacheIfNeeded = (versions) => {
+  Object.keys(versions).forEach((key) => {
+    const cached = getCachedData(key);
+    if (cached && cached.version !== versions[key]) {
+      localStorage.removeItem(key);
+    }
+  });
+};
 
 const handleResponse = async (response) => {
   if (!response.ok) {
     const errorData = await response.json();
     throw new Error(errorData.message || 'An error occurred');
   }
-  return response.json();
+  const result = await response.json();
+  if (result.versions) {
+    updateCacheIfNeeded(result.versions);
+  }
+  return result;
 };
 
 const getAuthHeaders = () => {
@@ -25,15 +48,34 @@ const getAuthHeaders = () => {
   };
 };
 
-export const getCategories = () =>
-  fetch(`${BASE_URL}/categories`, {
-    method: 'GET',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-      'BusinessUrl': BusinessUrl,
-    },
-  }).then(handleResponse);
+const fetchWithCache = async (key, url) => {
+  const cached = getCachedData(key);
+  if (cached) {
+   return cached.data;
+  }
+  try {
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'BusinessUrl': BusinessUrl,
+      },
+    });
+    const result = await handleResponse(response);
+    cacheData(key, result.version, result.data);
+    return result.data;
+  
+  } catch (error) {
+    console.error(`Error fetching ${key}:`, error);
+    return null;
+  }
+};
+
+export const getHeaderAPI = () => fetchWithCache('headerData', `${BASE_URL}/header`);
+export const getSliders = () => fetchWithCache('sliderData', `${BASE_URL}/sliders`);
+export const getCategories = () => fetchWithCache('categoryData', `${BASE_URL}/categories`);
+
 
   export const getProducts = (limit = 8, category = null,page = 1,search=false) => {
     let queryParams = `?limit=${limit}&page=${page}&search=${search}`;
