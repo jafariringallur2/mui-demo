@@ -42,7 +42,7 @@ const ShoppingCart = () => {
       setPaymentLoading(true);
       const items = cartItems.map((item) => ({
         product_id: item.product.id,
-        size: item.size,
+        variant_id: item.variant_id,
         qty: item.qty,
       }));
       const payloadData = {
@@ -144,14 +144,30 @@ const ShoppingCart = () => {
       .finally(() => setLoading(false));
   }, [cartCount]);
 
-  const totalSellingPrice = cartItems.reduce(
-    (sum, item) => sum + parseFloat(item.product.selling_price) * parseInt(item.qty, 10),
-    0
-  );
-  const totalPrice = cartItems.reduce(
-    (sum, item) => sum + parseFloat(item.product.original_price) * parseInt(item.qty, 10),
-    0
-  );
+  const totalSellingPrice = cartItems.reduce((sum, item) => {
+    const selectedVariant = item.product.variants.find(
+      (variant) => variant.id === item.variant_id
+    );
+  
+    const sellingPrice = selectedVariant
+      ? parseFloat(selectedVariant.selling_price)
+      : parseFloat(item.product.selling_price);
+  
+    return sum + sellingPrice * parseInt(item.qty, 10);
+  }, 0);
+  
+  const totalPrice = cartItems.reduce((sum, item) => {
+    const selectedVariant = item.product.variants.find(
+      (variant) => variant.id === item.variant_id
+    );
+  
+    const originalPrice = selectedVariant
+      ? parseFloat(selectedVariant.original_price)
+      : parseFloat(item.product.original_price);
+  
+    return sum + originalPrice * parseInt(item.qty, 10);
+  }, 0);
+  
 
   const handlerRmoveCartItem = async (id) => {
     try {
@@ -175,6 +191,24 @@ const ShoppingCart = () => {
         return item;
       })
     );
+  };
+  const handleVariantChange = (itemId, variantId) => {
+    try {
+     
+      setCartItems((prevItems) =>
+        prevItems.map((item) =>
+          item.id === itemId
+            ? {
+                ...item,
+                variant_id: variantId
+              }
+            : item
+        )
+      );
+      
+    } catch (error) {
+      console.error('Failed to update variant:', error);
+    }
   };
 
   let buttonText = 'Continue';
@@ -220,6 +254,7 @@ const ShoppingCart = () => {
             cartItems={cartItems}
             onQuantityChange={handleQuantityChange}
             onRemoveItem={handlerRmoveCartItem}
+            onVariantChange={handleVariantChange}
             removeLoadingId={removeLoadingId}
           />
         )}

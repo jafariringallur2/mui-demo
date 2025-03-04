@@ -77,7 +77,7 @@ const OrderTrackingView = () => {
         }}
       >
         <CircularProgress />
-        <Typography sx={{ marginTop: 2 }}>Loading...</Typography>
+        <Typography sx={{ mt: 2 }}>Loading...</Typography>
       </Box>
     );
   }
@@ -179,7 +179,7 @@ const OrderTrackingView = () => {
               </Box>
 
               {/* Status and Time */}
-              <Box sx={{ marginLeft: { xs: 2, md: 0 }, marginTop: { xs: 0, md: 1 } }}>
+              <Box sx={{ marginLeft: { xs: 2, md: 0 }, mt: { xs: 0, md: 1 } }}>
                 <Typography variant="body2">{item.status_description}</Typography>
                 <Typography variant="caption" color="textSecondary">
                   {item.time}
@@ -257,6 +257,15 @@ const OrderTrackingView = () => {
                 <Box sx={{ flex: 2 }}>
                   <Typography>{item.product.name}</Typography>
                   <Typography>Qty: {item.qty}</Typography>
+                  {item.variant_options && item.variant_options.length > 0 && (
+                    <Box sx={{ mt: 1 }}>
+                      {item.variant_options.map((variant, index) => (
+                        <Typography key={index}>
+                          {variant.option}: {variant.value}
+                        </Typography>
+                      ))}
+                    </Box>
+                  )}
                 </Box>
                 <Typography>₹{parseFloat(item.price).toFixed(2)}</Typography>
               </Box>
@@ -273,7 +282,7 @@ const OrderTrackingView = () => {
             backgroundColor: '#fff',
             borderRadius: 2,
             boxShadow: '0 1px 4px rgba(0, 0, 0, 0.1)',
-            marginTop: 3,
+            mt: 3,
           }}
         >
           <Typography variant="h6" sx={{ marginBottom: 2 }}>

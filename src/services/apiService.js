@@ -125,10 +125,13 @@ export const verifyOtp = (phone,otp) =>
     body: JSON.stringify({ userPhoneNumber: phone,otpValue: otp }),
   }).then(handleResponse);
 
-  export const addToCart = (id, quantity = null) => {
+  export const addToCart = (id, quantity = null,variant=null) => {
     const body = { id };
     if (quantity !== null) {
       body.qty = quantity;
+    }
+    if (variant !== null) {
+      body.variant_id = variant;
     }
     return fetch(`${BASE_URL}/add-to-cart`, {
       method: 'POST',

@@ -93,14 +93,14 @@ const CartSkelton = () => (
     <Grid item xs={12} md={4}>
       <Box padding={3} boxShadow={3} borderRadius={2} mt={4}>
         <Skeleton variant="text" width={120} height={30} />
-        <Skeleton variant="rectangular" width="100%" height={56} sx={{ marginTop: 2 }} />
+        <Skeleton variant="rectangular" width="100%" height={56} sx={{ mt: 2 }} />
         <Box mt={3}>
           <Skeleton variant="text" width={180} height={24} />
           <Skeleton variant="text" width={180} height={24} />
           <Skeleton variant="text" width={180} height={24} />
-          <Skeleton variant="text" width={180} height={30} sx={{ marginTop: 2 }} />
+          <Skeleton variant="text" width={180} height={30} sx={{ mt: 2 }} />
         </Box>
-        <Skeleton variant="rectangular" width="100%" height={56} sx={{ marginTop: 3 }} />
+        <Skeleton variant="rectangular" width="100%" height={56} sx={{ mt: 3 }} />
       </Box>
     </Grid>
   </Grid>

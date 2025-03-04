@@ -24,10 +24,10 @@ export const CartProvider = ({ children }) => {
   }, []);
 
   // Add item to the cart
-  const addToCart = useCallback(async (id,quantity=null) => {
+  const addToCart = useCallback(async (id,quantity=null,variant=null) => {
     setLoading(true);
     try {
-      await addToCartAPI(id,quantity);
+      await addToCartAPI(id,quantity,variant);
       // Optionally, refetch cart count after adding an item
       await fetchCartCount();
     } catch (error) {
