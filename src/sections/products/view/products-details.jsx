@@ -468,7 +468,7 @@ const ProductDetails = () => {
             <Button
               variant="contained"
               color="primary"
-              disabled={loadingBuy}
+              disabled={loadingBuy || !isAvailable}
               startIcon={<Iconify icon="eva:cart-fill" width={20} height={20} />}
               onClick={handleBuyNow}
               sx={{

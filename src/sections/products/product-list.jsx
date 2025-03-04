@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { Grid, Typography, Box, Skeleton } from '@mui/material';
 import { getProducts } from 'src/services/apiService';
 import ProductCard from './product-card';
+import EmptyProduct from './EmptyProduct';
 
 export default function ProductList({ limit, category, source }) {
   const [products, setProducts] = useState([]);
@@ -114,6 +115,10 @@ export default function ProductList({ limit, category, source }) {
         </Grid>
       </Box>
     );
+  }
+
+  if(products.length === 0){
+    return <EmptyProduct />
   }
 
   if (error) return <div>{error}</div>;

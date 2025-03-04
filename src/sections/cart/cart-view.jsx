@@ -5,6 +5,7 @@ import { useCart } from 'src/context/CartContext';
 import PriceDetails from './price-details';
 import CartItemsList from './CartItemsList';
 import CartSkelton from './CartSkelton';
+import EmptyCart from './EmptyCart';
 import DeliveryAddress from './DeliveryAddress';
 import Payment from './payment';
 import OrderSuccessDialog from './order-success';
@@ -234,6 +235,9 @@ const ShoppingCart = () => {
 
   if (loading) {
     return <CartSkelton />;
+  }
+  if(cartItems.length === 0){
+    return <EmptyCart />
   }
 
   return (
