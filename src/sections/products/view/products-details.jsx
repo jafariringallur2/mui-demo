@@ -29,7 +29,8 @@ const ProductDetails = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [selectedOptions, setSelectedOptions] = useState({});
   const [selectedVariant, setSelectedVariant] = useState(null);
-  const [uniqueOptions, setUniqueOptions] = useState([]); // State to store unique options
+  const [uniqueOptions, setUniqueOptions] = useState([]);
+  const [productImages, setProductImages] = useState([]); // Separate state for product images
   const isDesktop = useMediaQuery((theme) => theme.breakpoints.up('lg'));
   const { addToCart } = useCart();
   const { id } = useParams();
@@ -39,19 +40,27 @@ const ProductDetails = () => {
       try {
         const data = await getProductDetails(id);
         setProduct(data.data);
-
+        let images = [...data.data.images];
+  
+        if (data.data.variants && data.data.variants.length > 0) {
+          const initialVariant = data.data.variants[0];
+          setSelectedVariant(initialVariant);
+  
+          if (initialVariant.image) {
+            images = [initialVariant.image, ...data.data.images];
+          }
+  
+          const initialOptions = {};
+          initialVariant.options.forEach(({ option, value }) => {
+            initialOptions[option] = value;
+          });
+          setSelectedOptions(initialOptions);
+        }
+  
+        setProductImages(images);
         if (data.data.variants) {
           const options = extractUniqueOptions(data.data.variants);
           setUniqueOptions(options);
-
-          if (data.data.variants.length > 0) {
-            setSelectedVariant(data.data.variants[0]);
-            const initialOptions = {};
-            data.data.variants[0].options.forEach(({ option, value }) => {
-              initialOptions[option] = value;
-            });
-            setSelectedOptions(initialOptions);
-          }
         }
       } catch (error) {
         console.error('Failed to fetch items:', error);
@@ -60,7 +69,7 @@ const ProductDetails = () => {
         setLoading(false);
       }
     };
-
+  
     fetchProductDetails();
   }, [id]);
 
@@ -92,8 +101,16 @@ const ProductDetails = () => {
 
     if (matchedVariant && matchedVariant.is_available === 1) {
       setSelectedVariant(matchedVariant);
+
+      if (matchedVariant.image) {
+        setProductImages([matchedVariant.image, ...product.images]);
+      } else {
+        setProductImages([...product.images]);
+      }
+      setCurrentImageIndex(0);
     }
   };
+
   const renderVariantOptions = () => {
     if (!uniqueOptions || uniqueOptions.length === 0) return null;
 
@@ -155,11 +172,11 @@ const ProductDetails = () => {
   };
 
   const handleNextImage = () => {
-    setCurrentImageIndex((prev) => (prev + 1) % product.images.length);
+    setCurrentImageIndex((prev) => (prev + 1) % productImages.length);
   };
 
   const handlePrevImage = () => {
-    setCurrentImageIndex((prev) => (prev - 1 + product.images.length) % product.images.length);
+    setCurrentImageIndex((prev) => (prev - 1 + productImages.length) % productImages.length);
   };
 
   const handleKeyDown = (event, index) => {
@@ -171,7 +188,7 @@ const ProductDetails = () => {
   const handleAddToCart = async () => {
     setLoadingCart(true);
     try {
-      await addToCart(product.hashid, quantity,selectedVariant?.id);
+      await addToCart(product.hashid, quantity, selectedVariant?.id);
       setSnackbarOpen(true); // Show the snackbar on successful add
     } finally {
       setLoadingCart(false);
@@ -281,7 +298,7 @@ const ProductDetails = () => {
       <Box display="flex" flexDirection={{ xs: 'column', lg: 'row' }} flex={1}>
         {isDesktop && (
           <Grid container direction="column" spacing={2} marginRight={2} width="20%">
-            {product.images.map((image, index) => (
+            {productImages.map((image, index) => (
               <Grid item key={index}>
                 <Button
                   onClick={() => handleThumbnailClick(index)}
@@ -312,7 +329,7 @@ const ProductDetails = () => {
           <Box
             component="img"
             alt={product.name}
-            src={product.images[currentImageIndex]}
+            src={productImages[currentImageIndex]}
             sx={{
               width: '100%',
               height: 'auto',
@@ -339,7 +356,7 @@ const ProductDetails = () => {
           </IconButton>
           {!isDesktop && (
             <Grid container spacing={2} mt={1}>
-              {product.images.map((image, index) => (
+              {productImages.map((image, index) => (
                 <Grid item key={index} xs={3}>
                   <Button
                     onClick={() => handleThumbnailClick(index)}
