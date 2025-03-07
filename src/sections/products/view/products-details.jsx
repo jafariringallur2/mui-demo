@@ -17,7 +17,7 @@ import Iconify from 'src/components/iconify';
 import Label from 'src/components/label';
 import { fCurrency } from 'src/utils/format-number';
 import { useCart } from 'src/context/CartContext';
-import { getProductDetails } from 'src/services/apiService';
+import { getProductDetails} from 'src/services/apiService';
 import EmptyProduct from '../EmptyProduct';
 
 const ProductDetails = () => {
@@ -35,6 +35,37 @@ const ProductDetails = () => {
   const isDesktop = useMediaQuery((theme) => theme.breakpoints.up('lg'));
   const { addToCart } = useCart();
   const { id } = useParams();
+
+  useEffect(() => {
+    if (product) {
+      const headerData = getHeaderData();
+      let businessname = '';
+      if(headerData){
+        businessname = headerData.data.businessInfo.business_name;
+      }
+      document.title = `${product.name} | ${businessname}`;
+
+      const metaDescription = document.querySelector('meta[name="description"]');
+      if (metaDescription) {
+        metaDescription.setAttribute('content', product.product_description);
+      }
+
+      // Update Open Graph tags
+      const ogTitle = document.querySelector('meta[property="og:title"]');
+      const ogDescription = document.querySelector('meta[property="og:description"]');
+      const ogImage = document.querySelector('meta[property="og:image"]');
+
+      if (ogTitle) {
+        ogTitle.setAttribute('content', product.name);
+      }
+      if (ogDescription) {
+        ogDescription.setAttribute('content', product.product_description);
+      }
+      if (ogImage && productImages.length > 0) {
+        ogImage.setAttribute('content', productImages[0]); // Use the first product image
+      }
+    }
+  }, [product, productImages]);
 
   useEffect(() => {
     const fetchProductDetails = async () => {
@@ -90,6 +121,11 @@ const ProductDetails = () => {
       option,
       values: Array.from(optionsMap[option]),
     }));
+  };
+
+  const getHeaderData = (key) => {
+    const cached = localStorage.getItem('headerData');
+    return cached ? JSON.parse(cached) : null;
   };
 
   const handleOptionChange = (option, value) => {
@@ -213,7 +249,7 @@ const ProductDetails = () => {
   };
 
   const handleWhatsAppShare = () => {
-    const shareUrl = encodeURIComponent(window.location.href); // Current page URL
+    const shareUrl = (window.location.href);
     const shareText = encodeURIComponent(`Check out this product: ${product.name}\n${shareUrl}`); // Product name and URL
     const whatsappUrl = `https://api.whatsapp.com/send?text=${shareText}`;
 
