@@ -60,7 +60,17 @@ export default function Nav({ openNav, onCloseNav }) {
           label={item.title}
           icon={
             item.title === 'cart' ? (
-              <Badge badgeContent={cartCount} color="error">
+              <Badge badgeContent={cartCount} color="error"
+              sx={{
+                '& .MuiBadge-badge': {
+                  fontSize: '0.625rem',
+                  padding: '0 4px',
+                  height: '16px',
+                  minWidth: '16px',
+                  top: '5px',
+                },
+              }}
+              >
                 {item.icon}
               </Badge>
             ) : (

@@ -18,6 +18,7 @@ import Label from 'src/components/label';
 import { fCurrency } from 'src/utils/format-number';
 import { useCart } from 'src/context/CartContext';
 import { getProductDetails } from 'src/services/apiService';
+import EmptyProduct from '../EmptyProduct';
 
 const ProductDetails = () => {
   const [product, setProduct] = useState(null);
@@ -211,6 +212,15 @@ const ProductDetails = () => {
     setSnackbarOpen(false);
   };
 
+  const handleWhatsAppShare = () => {
+    const shareUrl = encodeURIComponent(window.location.href); // Current page URL
+    const shareText = encodeURIComponent(`Check out this product: ${product.name}\n${shareUrl}`); // Product name and URL
+    const whatsappUrl = `https://api.whatsapp.com/send?text=${shareText}`;
+
+    window.open(whatsappUrl, '_blank'); // Open WhatsApp share URL in a new tab
+  };
+
+
   if (loading) {
     return (
       <Box
@@ -283,7 +293,7 @@ const ProductDetails = () => {
   }
 
   if (!product) {
-    return <Typography>Error loading product details.</Typography>;
+    return <EmptyProduct />;
   }
 
   return (
@@ -498,6 +508,20 @@ const ProductDetails = () => {
                 {loadingBuy ? 'Adding...' : 'Buy Now'}
               
             </Button>
+          </Box>
+          <Box mt={2}>
+            <IconButton
+              onClick={handleWhatsAppShare}
+              sx={{
+                backgroundColor: '#25D366',
+                color: '#fff',
+                '&:hover': {
+                  backgroundColor: '#128C7E',
+                },
+              }}
+            >
+              <Iconify icon="eva:share-fill" width={20} height={20} />
+            </IconButton>
           </Box>
         </Box>
         <Portal>
