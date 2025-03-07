@@ -1,7 +1,5 @@
-const BASE_URL = 'https://web.botire.in/api';
-const BusinessUrl = 'boat';
-// const BASE_URL = 'http://127.0.0.1:8000/api';
-// const BusinessUrl = 'botire-digital-solutions';
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const BusinessUrl = import.meta.env.VITE_BUSINESS_URL;
 const getAuthToken = () => localStorage.getItem('token');
 
 const cacheData = (key, version, data) => {
