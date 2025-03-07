@@ -14,9 +14,9 @@ const navConfig = [
     icon: <Iconify width={24} icon="mdi:apps-box" />,
   },
   {
-    title: 'favorites',
-    path: '/favorites',
-    icon: <Iconify width={24} icon="mdi:heart-outline" />,
+    title: 'cart',
+    path: '/cart',
+    icon: <Iconify width={24} icon="mdi:cart-outline" />,
   },
   {
     title: 'account',

@@ -15,6 +15,7 @@ import {
   FormControl,
 } from '@mui/material';
 import Iconify from 'src/components/iconify';
+import { useResponsive } from 'src/hooks/use-responsive'; 
 
 export default function CartItemsList({
   cartItems,
@@ -24,7 +25,7 @@ export default function CartItemsList({
   removeLoadingId,
 }) {
   const [selectedOptions, setSelectedOptions] = useState({});
-
+  const isDesktop = useResponsive('up', 'sm');
   // Initialize selected options based on variant_id
   useState(() => {
     const initialSelectedOptions = {};
@@ -138,17 +139,18 @@ export default function CartItemsList({
           }}
         >
         
-          <Box
-            sx={{
-              position: 'absolute',
-              top: 1,
-              right: 3,
-              color: 'red',  
-              borderRadius: '50%',
-              padding: '4px',
-              cursor: 'pointer',
-            }}
-          >
+        <Box
+          sx={{
+            position: 'absolute',
+            top: isDesktop ? 1 : 'auto',
+            bottom: isDesktop ? 'auto' : 2,
+            right: isDesktop ? 3 : 1,
+            color: 'red',
+            borderRadius: '50%',
+            padding: '4px',
+            cursor: 'pointer',
+          }}
+        >
             <IconButton onClick={() => onRemoveItem(item.id)} sx={{ color: 'red' }}>
               {removeLoadingId === item.id ? (
                 <CircularProgress size={10} />
@@ -162,7 +164,8 @@ export default function CartItemsList({
                 component={RouterLink}
                 to={`/product/${item.product.id}`}
                 sx={{
-                  marginRight: 6,
+                  margin:{'sm' : 2,'xs' : 0},
+                  marginRight: {'sm' : 2,'xs' : 3},
                   width: '80px',
                   height: '80px',
                   objectFit: 'cover',
@@ -171,7 +174,7 @@ export default function CartItemsList({
                 <Box
                   component="img"
                   alt={item.product.name}
-                  src={item.product.single_image}
+                  src={selectedVariant?.image || item.product.single_image}
                   sx={{
                     width: 1,
                     height: 1,
@@ -272,7 +275,7 @@ export default function CartItemsList({
                   {uniqueOptions.map(({ option, values }) => (
                     <Grid item xs={12} sm={4} key={option}>
                       {' '}
-                      <Box display="flex" alignItems="center" gap={1}>
+                      <Box display="flex" alignItems="center" gap={0}>
                         <Typography variant="body2" sx={{ fontWeight: 'bold', minWidth: '60px' }}>
                           {option}:
                         </Typography>
@@ -283,8 +286,9 @@ export default function CartItemsList({
                             displayEmpty
                             size="small"
                             sx={{
-                              fontSize: '0.875rem',
-                              height: '32px',
+                              fontSize: { xs: '0.75rem', sm: '0.875rem' }, 
+                              height: { xs: '28px', sm: '32px' },
+                              maxWidth: { xs: '90px', sm: '140px' },
                             }}
                           >
                             <MenuItem value="" disabled>

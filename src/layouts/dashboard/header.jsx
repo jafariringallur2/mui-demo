@@ -91,6 +91,7 @@ export default function Header({ onOpenNav, businessDetails, headerLoading }) {
                 <Iconify width={24} icon="mdi:account-outline" />
               </IconButton>
             )}
+            {lgUp && (
             <IconButton color="default" onClick={handleCartClick}>
              {cartCount > 0 && (
                 <Badge badgeContent={cartCount} color="error">
@@ -101,6 +102,7 @@ export default function Header({ onOpenNav, businessDetails, headerLoading }) {
                 <Iconify width={24} icon="mdi:cart-outline" />
               )}
               </IconButton>
+            )}
           </Stack>
         </Toolbar>
       </AppBar>

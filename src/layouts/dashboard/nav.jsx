@@ -4,11 +4,14 @@ import PropTypes from 'prop-types';
 import Box from '@mui/material/Box';
 import BottomNavigation from '@mui/material/BottomNavigation';
 import BottomNavigationAction from '@mui/material/BottomNavigationAction';
+import Badge from '@mui/material/Badge';
 import { usePathname } from 'src/routes/hooks';
 import { RouterLink } from 'src/routes/components';
 import { useResponsive } from 'src/hooks/use-responsive';
+import { useCart  } from 'src/context/CartContext';
 import navConfig from './config-navigation';
 import LoginDrawer from './LoginDrawer'; // Import the LoginDrawer component
+
 
 export default function Nav({ openNav, onCloseNav }) {
   const pathname = usePathname();
@@ -16,6 +19,7 @@ export default function Nav({ openNav, onCloseNav }) {
   const [bottomNavValue, setBottomNavValue] = useState('');
   const [dialogOpen, setDialogOpen] = useState(false);
   const navigate = useNavigate();
+  const { cartCount } = useCart(); // Get the cart count from your cart context
 
   useEffect(() => {
     if (openNav) {
@@ -54,7 +58,15 @@ export default function Nav({ openNav, onCloseNav }) {
           component={item.title === 'account' ? undefined : RouterLink}
           href={item.title === 'account' ? undefined : item.path}
           label={item.title}
-          icon={item.icon}
+          icon={
+            item.title === 'cart' ? (
+              <Badge badgeContent={cartCount} color="error">
+                {item.icon}
+              </Badge>
+            ) : (
+              item.icon
+            )
+          }
         />
       ))}
     </BottomNavigation>
