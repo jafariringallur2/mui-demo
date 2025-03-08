@@ -15,6 +15,7 @@ import {
 } from '@mui/material';
 import Iconify from 'src/components/iconify';
 import Label from 'src/components/label';
+import { styled } from '@mui/material/styles';
 import { fCurrency } from 'src/utils/format-number';
 import { useCart } from 'src/context/CartContext';
 import { getProductDetails} from 'src/services/apiService';
@@ -31,7 +32,7 @@ const ProductDetails = () => {
   const [selectedOptions, setSelectedOptions] = useState({});
   const [selectedVariant, setSelectedVariant] = useState(null);
   const [uniqueOptions, setUniqueOptions] = useState([]);
-  const [productImages, setProductImages] = useState([]); // Separate state for product images
+  const [productImages, setProductImages] = useState([]);
   const isDesktop = useMediaQuery((theme) => theme.breakpoints.up('lg'));
   const { addToCart } = useCart();
   const { id } = useParams();
@@ -50,7 +51,6 @@ const ProductDetails = () => {
         metaDescription.setAttribute('content', product.product_description);
       }
 
-      // Update Open Graph tags
       const ogTitle = document.querySelector('meta[property="og:title"]');
       const ogDescription = document.querySelector('meta[property="og:description"]');
       const ogImage = document.querySelector('meta[property="og:image"]');
@@ -62,7 +62,7 @@ const ProductDetails = () => {
         ogDescription.setAttribute('content', product.product_description);
       }
       if (ogImage && productImages.length > 0) {
-        ogImage.setAttribute('content', productImages[0]); // Use the first product image
+        ogImage.setAttribute('content', productImages[0]);
       }
     }
   }, [product, productImages]);
@@ -147,6 +147,22 @@ const ProductDetails = () => {
       setCurrentImageIndex(0);
     }
   };
+  const CustomButton = styled(Button)(({ theme, selected }) => ({
+    borderColor: selected
+      ? theme.palette.secondary.main
+      : theme.palette.primary.light,
+    color: selected
+      ? theme.palette.secondary.main
+      : theme.palette.primary.main,
+    '&:hover': {
+      borderColor: selected
+        ? theme.palette.secondary.dark
+        : theme.palette.primary.dark,
+      color: selected
+        ? theme.palette.secondary.dark
+        : theme.palette.primary.dark,
+    },
+  }));
 
   const renderVariantOptions = () => {
     if (!uniqueOptions || uniqueOptions.length === 0) return null;
@@ -162,16 +178,16 @@ const ProductDetails = () => {
             const isAvailable = isCombinationAvailable(newOptions);
 
             return (
-              <Button
+              <CustomButton
                 key={value}
-                variant={selectedOptions[option] === value ? 'contained' : 'outlined'}
+                variant="outlined"
                 onClick={() => handleOptionChange(option, value)}
                 disabled={!isAvailable}
                 size="small"
-                color="secondary"
+                selected={selectedOptions[option] === value}
               >
-                {value}
-              </Button>
+              {value}
+            </CustomButton>
             );
           })}
         </Box>
@@ -455,7 +471,7 @@ const ProductDetails = () => {
             </Typography>
           )}
         </Typography>
-        <Label variant="filled" color="error" mt={1}>
+        <Label variant="filled" color="info" mt={1}>
           {`${displayOffer}% off`}
         </Label>
 
@@ -507,7 +523,7 @@ const ProductDetails = () => {
           <Box  mt={3} sx={{ display: 'flex', gap: 2 }}>
             <Button
               variant="contained"
-              color="error"
+              color="primary"
               startIcon={
                 loadingCart ? (
                   <CircularProgress size={10} />
@@ -530,7 +546,7 @@ const ProductDetails = () => {
         
             <Button
               variant="contained"
-              color="primary"
+              color="secondary"
               disabled={loadingBuy || !isAvailable}
               startIcon={<Iconify icon="eva:cart-fill" width={20} height={20} />}
               onClick={handleBuyNow}
@@ -556,7 +572,7 @@ const ProductDetails = () => {
                 },
               }}
             >
-              <Iconify icon="eva:share-fill" width={20} height={20} />
+              <Iconify icon="eva:share-fill" width={18} height={18} />
             </IconButton>
           </Box>
         </Box>

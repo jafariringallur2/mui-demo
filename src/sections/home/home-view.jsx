@@ -34,7 +34,7 @@ export default function HomeView() {
       <Box mt={4} display="flex" justifyContent="center">
         <Button
           variant="contained"
-          color="error"
+          color="secondary"
           startIcon={<Iconify icon="mdi:shopping" width={20} height={20} />}
           sx={{ width: { xs: '200px', sm: '300px' } }}
           onClick={() => navigate('/products')}

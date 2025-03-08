@@ -13,10 +13,10 @@ import {
   Alert,
   Portal,
 } from '@mui/material';
-import { Link as RouterLink } from 'react-router-dom'; // Import Link from react-router-dom
+import { Link as RouterLink } from 'react-router-dom';
 import Label from 'src/components/label';
 import { fCurrency } from 'src/utils/format-number';
-import Iconify from 'src/components/iconify'; // Adjust path if needed
+import Iconify from 'src/components/iconify';
 import { useCart } from 'src/context/CartContext';
 
 export default function ProductCard({ product }) {
@@ -28,7 +28,7 @@ export default function ProductCard({ product }) {
     setLoading(true);
     try {
       await addToCart(product.id);
-      setSnackbarOpen(true); // Show the snackbar on successful add
+      setSnackbarOpen(true);
     } finally {
       setLoading(false);
     }
@@ -37,22 +37,6 @@ export default function ProductCard({ product }) {
   const handleSnackbarClose = () => {
     setSnackbarOpen(false);
   };
-
-  const renderDiscount = (
-    <Label
-      variant="filled"
-      color="error"
-      sx={{
-        zIndex: 9,
-        top: 16,
-        right: 16,
-        position: 'absolute',
-        textTransform: 'uppercase',
-      }}
-    >
-      {`${product.discount}% off`}
-    </Label>
-  );
 
   const renderImg = (
     <Box
@@ -80,72 +64,81 @@ export default function ProductCard({ product }) {
   );
 
   return (
-    <Card>
+    <Card sx={{ backgroundColor: 'background.paper' }}>
       <Box sx={{ pt: '100%', position: 'relative' }}>
-        {renderDiscount}
+        <Label
+          variant="filled"
+          color="info"
+          sx={{
+            zIndex: 9,
+            top: 16,
+            right: 16,
+            position: 'absolute',
+            textTransform: 'uppercase',
+          }}
+        >
+          {`${product.discount}% off`}
+        </Label>
         {renderImg}
+        <Button
+          variant="contained"
+          color="primary"
+          sx={{
+            mt: { xs: 2, sm: 0 },
+            borderRadius: '50%',
+            minWidth: 'auto',
+            bottom: -110,
+            right: { xs : 12, sm : 16},
+            position: 'absolute',
+            width: { xs : 35, sm : 40},
+            height: { xs : 35, sm : 40},
+            p: 0,
+            '&:hover': {
+              backgroundColor: 'primary.dark',
+            },
+          }}
+          onClick={handleAddToCart}
+          disabled={loading}
+        >
+          {loading ? (
+            <CircularProgress size={18} />
+          ) : (
+            <Iconify icon="eva:shopping-cart-outline" width={18} height={18} />
+          )}
+        </Button>
       </Box>
 
       <Stack spacing={2} sx={{ p: 3 }}>
         <MuiLink
-          component={RouterLink} // Use RouterLink to make the name clickable
-          to={`/product/${product.id}`} // Navigate to the product details page
+          component={RouterLink}
+          to={`/product/${product.id}`}
           color="inherit"
           underline="none"
           variant="body2"
+          fontSize={16}
           fontWeight="bold"
         >
           {product.name}
         </MuiLink>
 
         <Grid container alignItems="center">
-          <Grid item xs={12} sm={6}>
-            <Box>
-              <Typography variant="body1" color="primary" fontSize={16}>
-                {fCurrency(product.discountedPrice)}
+          <Box>
+            <Typography variant="body1" color="text.primary" fontSize={15} fontWeight="bold">
+              {fCurrency(product.discountedPrice)}
+            </Typography>
+            {product.originalPrice && (
+              <Typography
+                variant="subtitle2"
+                fontSize={13}
+                sx={{
+                  color: 'text.disabled',
+                  textDecoration: 'line-through',
+                }}
+              >
+                {fCurrency(product.originalPrice)}
               </Typography>
-              {product.originalPrice && (
-                <Typography
-                  variant="subtitle2"
-                  fontSize={13}
-                  sx={{
-                    color: 'text.disabled',
-                    textDecoration: 'line-through',
-                  }}
-                >
-                  {fCurrency(product.originalPrice)}
-                </Typography>
-              )}
-            </Box>
-          </Grid>
-
-          <Grid
-            item
-            xs={12}
-            sm={6}
-            display="flex"
-            justifyContent={{ xs: 'center', sm: 'flex-end' }}
-          >
-            <Button
-              variant="outlined"
-              color="error"
-              startIcon={
-                loading ? (
-                  <CircularProgress size={10} />
-                ) : (
-                  <Iconify icon="eva:shopping-cart-outline" width={20} height={20} />
-                )
-              }
-              sx={{
-                mt: { xs: 2, sm: 0 },
-              }}
-              fullWidth
-              onClick={handleAddToCart}
-              disabled={loading}
-            >
-              {loading ? 'Adding...' : 'Add'}
-            </Button>
-          </Grid>
+            )}
+          </Box>
         </Grid>
       </Stack>
 
@@ -167,6 +160,6 @@ ProductCard.propTypes = {
     image: PropTypes.string.isRequired,
     originalPrice: PropTypes.number.isRequired,
     discountedPrice: PropTypes.number.isRequired,
-    discount: PropTypes.number, // discount is optional
+    discount: PropTypes.number,
   }).isRequired,
 };

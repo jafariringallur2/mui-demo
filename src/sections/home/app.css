@@ -22,7 +22,7 @@
 
 .slick-dots li.slick-active button:before {
   opacity: 1;
-  color: #d32f2f; /* Red color for active dot */
+  color: #b3b3b3;
 }
 
 @keyframes fadeInDown {

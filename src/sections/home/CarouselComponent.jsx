@@ -79,7 +79,7 @@ const CarouselComponent = () => {
               component="div"
               onClick={() => {
                 if (slide.link) {
-                  window.open(slide.link, "_blank"); // Open in a new tab if link exists
+                  window.open(slide.link, "_blank");
                 }
               }}
               sx={{
@@ -92,7 +92,7 @@ const CarouselComponent = () => {
                 padding: "20px",
                 boxSizing: "border-box",
                 height: { xs: "400px", sm: "350px" },
-                cursor: slide.link ? "pointer" : "default", // Show pointer cursor only if clickable
+                cursor: slide.link ? "pointer" : "default", 
               }}
             />
           ))}

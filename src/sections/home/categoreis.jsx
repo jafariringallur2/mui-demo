@@ -37,7 +37,7 @@ const Categories = () => {
         <Typography variant="h5" fontWeight="bold">
           Categories
         </Typography>
-        <Button variant="text" sx={{ color: 'red' }} onClick={() => handleSeeAllClick()}>
+        <Button variant="text" color="primary" onClick={() => handleSeeAllClick()}>
           See All
         </Button>
       </Box>

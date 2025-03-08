@@ -218,7 +218,7 @@ export default function CartItemsList({
                     )}
                   </Typography>
                   {offerPercentage > 0 && (
-                    <Label variant="filled" color="error">
+                    <Label variant="filled" color="info">
                       {offerPercentage}% off
                     </Label>
                   )}

@@ -299,7 +299,7 @@ const ShoppingCart = () => {
           }}
         >
           <Button
-            color="inherit"
+            color="primary"
             variant="contained"
             disabled={activeStep === 0}
             onClick={handleBack}
@@ -311,7 +311,7 @@ const ShoppingCart = () => {
 
           <Button
             variant="contained"
-            color="error"
+            color="secondary"
             onClick={handleNext}
             sx={{ width: '50%' }}
             disabled={buttonDisabled || (activeStep === 1 && !selectedAddress)}

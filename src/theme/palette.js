@@ -17,32 +17,40 @@ export const grey = {
   900: '#161C24',
 };
 
-export const primary = {
-  lighter: '#D0ECFE',
-  light: '#73BAFB',
-  main: '#1877F2',
-  dark: '#0C44AE',
-  darker: '#042174',
-  contrastText: '#FFFFFF',
-};
+function generateShades(hex) {
+  /* eslint-disable no-bitwise */
+  function lightenDarkenColor(col, amt) {
+    const num = parseInt(col.slice(1), 16);
+    const r = Math.min(255, Math.max(0, (num >> 16) + amt));
+    const g = Math.min(255, Math.max(0, ((num >> 8) & 0x00ff) + amt));
+    const b = Math.min(255, Math.max(0, (num & 0x0000ff) + amt));
+    return `#${(r << 16 | g << 8 | b).toString(16).padStart(6, '0')}`;
+  }
 
-export const secondary = {
-  lighter: '#EFD6FF',
-  light: '#C684FF',
-  main: '#8E33FF',
-  dark: '#5119B7',
-  darker: '#27097A',
-  contrastText: '#FFFFFF',
-};
+  const getContrastText = (color) => {
+    const r = parseInt(color.substring(1, 3), 16);
+    const g = parseInt(color.substring(3, 5), 16);
+    const b = parseInt(color.substring(5, 7), 16);
+    const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+    return luminance > 0.5 ? "#000000" : "#FFFFFF";
+  };
+  /* eslint-enable no-bitwise */
 
-export const info = {
-  lighter: '#CAFDF5',
-  light: '#61F3F3',
-  main: '#00B8D9',
-  dark: '#006C9C',
-  darker: '#003768',
-  contrastText: '#FFFFFF',
-};
+  return {
+    lighter: lightenDarkenColor(hex, 100),
+    light: lightenDarkenColor(hex, 50),
+    main: hex,
+    dark: lightenDarkenColor(hex, -50),
+    darker: lightenDarkenColor(hex, -100),
+    contrastText: getContrastText(hex),
+  };
+}
+
+
+export const primary = generateShades(import.meta.env.VITE_PRIMARY_COLOR);
+export const secondary = generateShades(import.meta.env.VITE_SECONDARY_COLOR);
+export const info = generateShades(import.meta.env.VITE_INFO_COLOR);
+
 
 export const success = {
   lighter: '#C8FAD6',

@@ -76,7 +76,7 @@ export default function PriceDetails({ totalPrice, totalSellingPrice,setGrandTot
           endAdornment: (
             <Button
               variant="contained"
-              color="error"
+              color="secondary"
               onClick={handleApplyCoupon}
               disabled={applyLoading}
             >
