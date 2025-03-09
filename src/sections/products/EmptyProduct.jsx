@@ -21,7 +21,6 @@ const EmptyProduct = () => {
         textAlign: 'center',
       }}
     >
-      {/* <EmptyCartIcon width={150} height={150} /> */}
      
       <Box
         component="img"

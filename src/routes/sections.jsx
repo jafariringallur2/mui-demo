@@ -12,6 +12,7 @@ export const AccountPage = lazy(() => import('src/pages/account'));
 export const ProductDetailsPage = lazy(() => import('src/pages/ProductDetails'));
 export const Page404 = lazy(() => import('src/pages/page-not-found'));
 export const OrderTrackingPage = lazy(() => import('src/pages/order-tracking'));
+export const TrackOrderPage = lazy(() => import('src/pages/track-order'));
 
 // ----------------------------------------------------------------------
 
@@ -42,6 +43,10 @@ export default function Router() {
     {
       path: 'order/:id',
       element: <OrderTrackingPage />,
+    },
+    {
+      path: 'track-order',
+      element: <TrackOrderPage />,
     },
     {
       path: '*',

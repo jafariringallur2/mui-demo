@@ -38,7 +38,7 @@ export default function Footer({businessDetails, headerLoading}) {
             </Typography>
 
             <Link
-              href="#"
+              href="/track-order"
               variant="body2"
               color="text.secondary"
               underline="none"

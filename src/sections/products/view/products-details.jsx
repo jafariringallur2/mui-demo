@@ -19,6 +19,7 @@ import { styled } from '@mui/material/styles';
 import { fCurrency } from 'src/utils/format-number';
 import { useCart } from 'src/context/CartContext';
 import { getProductDetails} from 'src/services/apiService';
+import useHeaderData from 'src/hooks/useHeaderData'; 
 import EmptyProduct from '../EmptyProduct';
 
 const ProductDetails = () => {
@@ -36,13 +37,15 @@ const ProductDetails = () => {
   const isDesktop = useMediaQuery((theme) => theme.breakpoints.up('lg'));
   const { addToCart } = useCart();
   const { id } = useParams();
+  const { headerData } = useHeaderData();
+  const { businessInfo } = headerData || {};
 
   useEffect(() => {
     if (product) {
-      const headerData = getHeaderData();
+
       let businessname = '';
-      if(headerData){
-        businessname = headerData.data.businessInfo.business_name;
+      if(businessInfo){
+        businessname = businessInfo.business_name;
       }
       document.title = `${product.name} | ${businessname}`;
 
@@ -65,7 +68,7 @@ const ProductDetails = () => {
         ogImage.setAttribute('content', productImages[0]);
       }
     }
-  }, [product, productImages]);
+  }, [product, productImages, businessInfo]);
 
   useEffect(() => {
     const fetchProductDetails = async () => {
@@ -121,11 +124,6 @@ const ProductDetails = () => {
       option,
       values: Array.from(optionsMap[option]),
     }));
-  };
-
-  const getHeaderData = (key) => {
-    const cached = localStorage.getItem('headerData');
-    return cached ? JSON.parse(cached) : null;
   };
 
   const handleOptionChange = (option, value) => {

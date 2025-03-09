@@ -6,7 +6,6 @@ import {
   Button,
   Box,
   Link as MuiLink,
-  Grid,
   Stack,
   CircularProgress,
   Snackbar,
@@ -80,32 +79,7 @@ export default function ProductCard({ product }) {
           {`${product.discount}% off`}
         </Label>
         {renderImg}
-        <Button
-          variant="contained"
-          color="primary"
-          sx={{
-            mt: { xs: 2, sm: 0 },
-            borderRadius: '50%',
-            minWidth: 'auto',
-            bottom: -110,
-            right: { xs : 12, sm : 16},
-            position: 'absolute',
-            width: { xs : 35, sm : 40},
-            height: { xs : 35, sm : 40},
-            p: 0,
-            '&:hover': {
-              backgroundColor: 'primary.dark',
-            },
-          }}
-          onClick={handleAddToCart}
-          disabled={loading}
-        >
-          {loading ? (
-            <CircularProgress size={18} />
-          ) : (
-            <Iconify icon="eva:shopping-cart-outline" width={18} height={18} />
-          )}
-        </Button>
+        
       </Box>
 
       <Stack spacing={2} sx={{ p: 3 }}>
@@ -121,8 +95,7 @@ export default function ProductCard({ product }) {
           {product.name}
         </MuiLink>
 
-        <Grid container alignItems="center">
-          <Box>
+          <Box sx={{ position: 'relative' }}>
             <Typography variant="body1" color="text.primary" fontSize={15} fontWeight="bold">
               {fCurrency(product.discountedPrice)}
             </Typography>
@@ -138,8 +111,33 @@ export default function ProductCard({ product }) {
                 {fCurrency(product.originalPrice)}
               </Typography>
             )}
+            <Button
+              variant="contained"
+              color="primary"
+              sx={{
+                mt: { xs: 2, sm: 0 },
+                borderRadius: '50%',
+                minWidth: 'auto',
+                bottom: -10,
+                right: -10,
+                position: 'absolute',
+                width: { xs : 35, sm : 40},
+                height: { xs : 35, sm : 40},
+                p: 0,
+                '&:hover': {
+                  backgroundColor: 'primary.dark',
+                },
+              }}
+              onClick={handleAddToCart}
+              disabled={loading}
+            >
+              {loading ? (
+                <CircularProgress size={18} />
+              ) : (
+                <Iconify icon="eva:shopping-cart-outline" width={18} height={18} />
+              )}
+            </Button>
           </Box>
-        </Grid>
       </Stack>
 
       <Portal>
