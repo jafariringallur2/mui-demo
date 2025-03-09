@@ -25,7 +25,7 @@ const EmptyProduct = () => {
       <Box
         component="img"
         alt='emptyproduct'
-        src='assets/no_result.png'
+        src='/assets/no_result.png'
         sx={{
           width: '130px',
           height: '130px',

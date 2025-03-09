@@ -14,7 +14,7 @@ import { bgBlur } from 'src/theme/css';
 import Iconify from 'src/components/iconify';
 import { HEADER } from './config-layout';
 import Searchbar from './common/searchbar';
-import LoginDialog from './LoginDialog'; // Import the dialog component
+import LoginDialog from './LoginDialog';
 
 export default function Header({ onOpenNav, businessDetails, headerLoading }) {
   const { cartCount } = useCart();

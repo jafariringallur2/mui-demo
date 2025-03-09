@@ -181,6 +181,21 @@ export const getCustomerAddresses = () =>
     headers: getAuthHeaders(),
   }).then(handleResponse);
 
+  export const updateCustomerAddress = (id,address_data) => {
+    const body = address_data;
+    return fetch(`${BASE_URL}/customer-address/${id}`, {
+      method: 'PUT',
+      headers: getAuthHeaders(),
+      body: JSON.stringify(body),
+    }).then(handleResponse);
+  };
+
+  export const deleteCustomerAddress = (id) => 
+    fetch(`${BASE_URL}/customer-address/${id}`, {
+      method: 'DELETE',
+      headers: getAuthHeaders(),
+    }).then(handleResponse);
+
 export const getOrders = () =>
   fetch(`${BASE_URL}/orders`, {
     method: 'GET',

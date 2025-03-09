@@ -19,6 +19,7 @@ import {
 import { useTheme } from '@mui/material/styles';
 import Iconify from 'src/components/iconify';
 import { getOrders } from 'src/services/apiService';
+import CustomerAddress from './CustomerAddress';
 
 const getStatusBadge = (status) => {
   const statusColors = {
@@ -157,9 +158,7 @@ const AccountView = () => {
           </List>
         );
       case 1:
-        return <Typography>Here are your saved addresses.</Typography>;
-      case 2:
-        return <Typography>Here are your saved products.</Typography>;
+        return <CustomerAddress />;
       default:
         return <Typography>Select a tab to view content.</Typography>;
     }
@@ -242,13 +241,6 @@ const AccountView = () => {
               iconPosition={isMobile ? 'top' : 'start'}
               label="Addresses"
             />
-            {!isMobile && (
-              <Tab
-                icon={<Iconify icon="mdi:heart" width={20} />} // Saved Products icon
-                iconPosition={isMobile ? 'top' : 'start'}
-                label="Favourites"
-              />
-            )}
          
           </Tabs>
         </Box>

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Alert, Box, Button, Grid, Stepper, Step, StepLabel, CircularProgress } from '@mui/material';
 import { getCartItems, createOnlinePayment, createOrder } from 'src/services/apiService';
 import { useCart } from 'src/context/CartContext';
+import LoginDialog from 'src/layouts/dashboard/LoginDialog';
 import PriceDetails from './price-details';
 import CartItemsList from './CartItemsList';
 import CartSkelton from './CartSkelton';
@@ -9,6 +10,7 @@ import EmptyCart from './EmptyCart';
 import DeliveryAddress from './DeliveryAddress';
 import Payment from './payment';
 import OrderSuccessDialog from './order-success';
+
 
 const steps = ['Items', 'Address', 'Payment'];
 
@@ -26,6 +28,7 @@ const ShoppingCart = () => {
   const [paymentLoading, setPaymentLoading] = useState(false);
   const [orderSuccess, setOrderSuccess] = useState(false);
   const [orderId, setOrderId] = useState('');
+  const [openLoginDialog, setOpenLoginDialog] = useState(false);
 
 
   const loadRazorpayScript = () =>
@@ -39,7 +42,11 @@ const ShoppingCart = () => {
     });
 
   const handleNext = async () => {
-    if (activeStep === 2) {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      setOpenLoginDialog(true);
+    }
+    else if (activeStep === 2) {
       setPaymentLoading(true);
       const items = cartItems.map((item) => ({
         product_id: item.product.id,
@@ -61,6 +68,10 @@ const ShoppingCart = () => {
     } else {
       setActiveStep((prevActiveStep) => prevActiveStep + 1);
     }
+  };
+
+  const handleCloseLoginDialog = () => {
+    setOpenLoginDialog(false);
   };
 
   const createOnlinePaymentAPI = async (payload) => {
@@ -241,6 +252,7 @@ const ShoppingCart = () => {
   }
 
   return (
+    <>
     <Grid container spacing={4} padding={2}>
       <Grid item xs={12} md={8}>
         <Box sx={{ width: '100%' }}>
@@ -331,6 +343,8 @@ const ShoppingCart = () => {
         orderId={orderId}
       />
     </Grid>
+    <LoginDialog open={openLoginDialog} onClose={handleCloseLoginDialog} />
+    </>
   );
 };
 

@@ -100,10 +100,10 @@ const OrderTrackingView = () => {
           textAlign: 'center',
         }}
       >
-        <Box
+         <Box
           component="img"
-          alt="emptyproduct"
-          src="assets/no_result.png"
+          alt='invalid-order'
+          src='/assets/no_result.png'
           sx={{
             width: '130px',
             height: '130px',
