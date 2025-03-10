@@ -28,11 +28,7 @@ function ShopUsernameValidator() {
   if (RESERVED_WORDS.includes(shopUsername)) {
     return <Navigate to="/404" replace />;
   }
-  if (!isCustomDomain) {
-    setBusinessUrl(shopUsername);
-  } else {
-    setBusinessUrl(import.meta.env.VITE_BUSINESS_URL);
-  }
+ 
   return (
     <DashboardLayout>
       <Suspense>
@@ -40,6 +36,15 @@ function ShopUsernameValidator() {
       </Suspense>
     </DashboardLayout>
   );
+}
+
+function BusinessUrlUpdater(){
+  const { shopUsername } = useParams();
+  if (!isCustomDomain) {
+    setBusinessUrl(shopUsername);
+  } else {
+    setBusinessUrl(import.meta.env.VITE_BUSINESS_URL);
+  }
 }
 
 
@@ -88,7 +93,12 @@ export default function Router() {
       : [
           {
             path: ':shopUsername',
-            element: <ShopUsernameValidator />,
+            element: (
+              <>
+              <ShopUsernameValidator />
+              <BusinessUrlUpdater />
+              </>
+            ),
             children: [
               { element: <IndexPage />, index: true },
               { path: 'categories', element: <CategoriesPage /> },
@@ -101,7 +111,12 @@ export default function Router() {
           },
           {
             path: ':shopUsername/order/:id',
-            element: <OrderTrackingPage />,
+            element: (
+              <>
+              <BusinessUrlUpdater />
+              <OrderTrackingPage />
+              </>
+            ),
           },
           {
             path: ':shopUsername/track-order',
