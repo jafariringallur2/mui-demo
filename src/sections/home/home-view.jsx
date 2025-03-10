@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
+import useShopNavigate  from 'src/hooks/use-shop-navigate';
 
 import Iconify from 'src/components/iconify';
 import { Box,Button } from '@mui/material';
@@ -11,7 +12,7 @@ import ProductList from '../products/product-list';
 
 
 export default function HomeView() {
-  const navigate = useNavigate();
+  const navigate = useShopNavigate();
   const [searchParams] = useSearchParams();
   const [openLoginDialog, setOpenLoginDialog] = useState(false);
 

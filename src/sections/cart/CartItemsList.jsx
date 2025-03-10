@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { Link as RouterLink } from 'react-router-dom';
 import Label from 'src/components/label';
 import { fCurrency } from 'src/utils/format-number';
 import {
@@ -16,6 +15,7 @@ import {
 } from '@mui/material';
 import Iconify from 'src/components/iconify';
 import { useResponsive } from 'src/hooks/use-responsive'; 
+import useShopNavigate  from 'src/hooks/use-shop-navigate';
 
 export default function CartItemsList({
   cartItems,
@@ -26,6 +26,8 @@ export default function CartItemsList({
 }) {
   const [selectedOptions, setSelectedOptions] = useState({});
   const isDesktop = useResponsive('up', 'sm');
+  const navigate = useShopNavigate();
+
   // Initialize selected options based on variant_id
   useState(() => {
     const initialSelectedOptions = {};
@@ -104,6 +106,10 @@ export default function CartItemsList({
     }
   };
 
+  const navigateProductView = (id) => {
+    navigate(`/product/${id}`);
+  }
+
   return (
     <Box>
       <Typography variant="h6" gutterBottom p={2}>
@@ -161,14 +167,14 @@ export default function CartItemsList({
           </Box>
             <Box display="flex" alignItems="center" sx={{ flex: 1 }}>
               <Box
-                component={RouterLink}
-                to={`/product/${item.product.id}`}
+                onClick={() => navigateProductView(item.product.id)}
                 sx={{
                   margin:{'sm' : 2,'xs' : 0},
                   marginRight: {'sm' : 2,'xs' : 3},
                   width: '80px',
                   height: '80px',
                   objectFit: 'cover',
+                  cursor: 'pointer',
                 }}
               >
                 <Box
@@ -185,8 +191,10 @@ export default function CartItemsList({
 
               <Box sx={{ flex: 1 }}>
                 <MuiLink
-                  component={RouterLink}
-                  to={`/product/${item.product.id}`}
+                   onClick={() => navigateProductView(item.product.id)}
+                   sx={{
+                     cursor: 'pointer',
+                   }}
                   color="inherit"
                   underline="none"
                   variant="body2"

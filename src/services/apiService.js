@@ -1,5 +1,9 @@
+import { getBusinessUrl } from 'src/singletons/businessUrlSingleton';
+
+
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
-const BusinessUrl = import.meta.env.VITE_BUSINESS_URL;
+const getLatestBusinessUrl = () => getBusinessUrl();
+
 const getAuthToken = () => localStorage.getItem('token');
 
 const cacheData = (key, version, data) => {
@@ -13,9 +17,10 @@ const getCachedData = (key) => {
 
 const updateCacheIfNeeded = (versions) => {
   Object.keys(versions).forEach((key) => {
-    const cached = getCachedData(key);
+    const business_key = `${getLatestBusinessUrl()}-${key}`;
+    const cached = getCachedData(business_key);
     if (cached && cached.version !== versions[key]) {
-      localStorage.removeItem(key);
+      localStorage.removeItem(business_key);
     }
   });
 };
@@ -37,17 +42,18 @@ const getAuthHeaders = () => {
   return token ? {
     'Accept': 'application/json',
     'Content-Type': 'application/json',
-    'BusinessUrl': BusinessUrl,
+    'BusinessUrl': getLatestBusinessUrl(),
     'x-authorization': `Bearer ${token}`,
   } : {
     'Accept': 'application/json',
     'Content-Type': 'application/json',
-    'BusinessUrl': BusinessUrl,
+    'BusinessUrl': getLatestBusinessUrl(),
   };
 };
 
 const fetchWithCache = async (key, url) => {
-  const cached = getCachedData(key);
+  const business_key = `${getLatestBusinessUrl()}-${key}`;
+  const cached = getCachedData(business_key);
   if (cached) {
    return cached.data;
   }
@@ -57,16 +63,16 @@ const fetchWithCache = async (key, url) => {
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
-        'BusinessUrl': BusinessUrl,
+        'BusinessUrl': getLatestBusinessUrl(),
       },
     });
     const result = await handleResponse(response);
-    cacheData(key, result.version, result.data);
+    cacheData(business_key, result.version, result.data);
     return result.data;
   
   } catch (error) {
     console.error(`Error fetching ${key}:`, error);
-    return null;
+    throw new Error('Failed to fetch header data');
   }
 };
 
@@ -86,7 +92,7 @@ export const getCategories = () => fetchWithCache('categoryData', `${BASE_URL}/c
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
-        'BusinessUrl': BusinessUrl,
+        'BusinessUrl': getLatestBusinessUrl(),
       },
     }).then(handleResponse);
   };
@@ -97,7 +103,7 @@ export const getProductDetails = (id) =>
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
-      'BusinessUrl': BusinessUrl,
+      'BusinessUrl': getLatestBusinessUrl(),
     },
   }).then(handleResponse);
 
@@ -107,7 +113,7 @@ export const sendOtp = (phone) =>
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
-      'BusinessUrl': BusinessUrl,
+      'BusinessUrl': getLatestBusinessUrl(),
     },
     body: JSON.stringify({ userPhoneNumber: phone }),
   }).then(handleResponse);
@@ -118,7 +124,7 @@ export const verifyOtp = (phone,otp) =>
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
-      'BusinessUrl': BusinessUrl,
+      'BusinessUrl': getLatestBusinessUrl(),
     },
     body: JSON.stringify({ userPhoneNumber: phone,otpValue: otp }),
   }).then(handleResponse);
@@ -225,6 +231,6 @@ export const getOrders = () =>
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
-      'BusinessUrl': BusinessUrl,
+      'BusinessUrl': getLatestBusinessUrl(),
     },
   }).then(handleResponse);

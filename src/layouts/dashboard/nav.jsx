@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import Box from '@mui/material/Box';
 import BottomNavigation from '@mui/material/BottomNavigation';
@@ -8,6 +7,7 @@ import Badge from '@mui/material/Badge';
 import { usePathname } from 'src/routes/hooks';
 import { RouterLink } from 'src/routes/components';
 import { useResponsive } from 'src/hooks/use-responsive';
+import useShopNavigate  from 'src/hooks/use-shop-navigate';
 import { useCart  } from 'src/context/CartContext';
 import navConfig from './config-navigation';
 import LoginDrawer from './LoginDrawer'; // Import the LoginDrawer component
@@ -18,7 +18,7 @@ export default function Nav({ openNav, onCloseNav }) {
   const upLg = useResponsive('up', 'lg');
   const [bottomNavValue, setBottomNavValue] = useState('');
   const [dialogOpen, setDialogOpen] = useState(false);
-  const navigate = useNavigate();
+  const navigate = useShopNavigate();
   const { cartCount } = useCart(); // Get the cart count from your cart context
 
   useEffect(() => {

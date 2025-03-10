@@ -1,12 +1,12 @@
 import {React} from "react";
 import PropTypes from "prop-types";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
+import useShopNavigate  from 'src/hooks/use-shop-navigate';
 import { Dialog, Box, Typography, Button } from "@mui/material";
 import { useCart } from 'src/context/CartContext';
 
 export default function OrderSuccessDialog({ open,orderId }) {
   const { fetchCartCount } = useCart();
-  const navigate = useNavigate();
+  const navigate = useShopNavigate();
 
   const handleContinueShopping = () => {
     fetchCartCount();
@@ -15,7 +15,7 @@ export default function OrderSuccessDialog({ open,orderId }) {
 
   const handleTrackOrder = () => {
     fetchCartCount();
-    window.open(`/order/${orderId}`, '_blank');
+    navigate(`/order/${orderId}`,true);
     navigate("/"); 
   };
   return (

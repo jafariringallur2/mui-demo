@@ -12,13 +12,14 @@ import {
   Alert,
   Portal,
 } from '@mui/material';
-import { Link as RouterLink } from 'react-router-dom';
+import useShopNavigate  from 'src/hooks/use-shop-navigate';
 import Label from 'src/components/label';
 import { fCurrency } from 'src/utils/format-number';
 import Iconify from 'src/components/iconify';
 import { useCart } from 'src/context/CartContext';
 
 export default function ProductCard({ product }) {
+  const navigate = useShopNavigate();
   const { addToCart } = useCart();
   const [loading, setLoading] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
@@ -37,16 +38,20 @@ export default function ProductCard({ product }) {
     setSnackbarOpen(false);
   };
 
+  const navigateProductView = (id) => {
+    navigate(`/product/${id}`);
+  }
+
   const renderImg = (
     <Box
-      component={RouterLink}
-      to={`/product/${product.id}`}
+      onClick={() => navigateProductView(product.id)}
       sx={{
         top: 0,
         width: 1,
         height: 1,
         objectFit: 'cover',
         position: 'absolute',
+        cursor: 'pointer',
       }}
     >
       <Box
@@ -84,13 +89,15 @@ export default function ProductCard({ product }) {
 
       <Stack spacing={2} sx={{ p: 3 }}>
         <MuiLink
-          component={RouterLink}
-          to={`/product/${product.id}`}
           color="inherit"
           underline="none"
           variant="body2"
           fontSize={16}
           fontWeight="bold"
+          onClick={() => navigateProductView(product.id)}
+          sx={{
+            cursor: 'pointer',
+          }}
         >
           {product.name}
         </MuiLink>

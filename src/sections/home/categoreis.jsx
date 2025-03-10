@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Card, Grid, Button, CardMedia, Typography, Skeleton } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import useShopNavigate  from 'src/hooks/use-shop-navigate';
 import { getCategories } from 'src/services/apiService';
 
 const Categories = () => {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
+  const navigate = useShopNavigate();
 
   useEffect(() => {
     const fetchCategories = async () => {

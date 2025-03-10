@@ -1,10 +1,10 @@
 import React from 'react';
 import { Button, Typography, Box } from '@mui/material';
-import { useNavigate } from "react-router-dom"; 
+import useShopNavigate  from 'src/hooks/use-shop-navigate';
 
 const EmptyCart = () => {
   
-  const navigate = useNavigate();
+  const navigate = useShopNavigate();
 
   const handleBackToHome = () => {
     navigate('/');

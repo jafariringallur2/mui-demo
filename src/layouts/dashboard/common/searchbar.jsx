@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import Slide from '@mui/material/Slide';
 import Input from '@mui/material/Input';
 import Button from '@mui/material/Button';
@@ -8,6 +8,7 @@ import IconButton from '@mui/material/IconButton';
 import InputAdornment from '@mui/material/InputAdornment';
 import ClickAwayListener from '@mui/material/ClickAwayListener';
 import { bgBlur } from 'src/theme/css';
+import useShopNavigate  from 'src/hooks/use-shop-navigate';
 import Iconify from 'src/components/iconify';
 
 // ----------------------------------------------------------------------
@@ -38,7 +39,7 @@ const StyledSearchbar = styled('div')(({ theme }) => ({
 // ----------------------------------------------------------------------
 
 export default function Searchbar() {
-  const navigate = useNavigate();
+  const navigate = useShopNavigate();
   const location = useLocation();
   const [open, setOpen] = useState(false);
   const [searchValue, setSearchValue] = useState('');

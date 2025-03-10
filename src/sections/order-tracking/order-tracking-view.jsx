@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { useParams,useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
+import useShopNavigate  from 'src/hooks/use-shop-navigate';
 import { Button, Box, Card, CardContent, Typography, Divider, CircularProgress } from '@mui/material';
 import Iconify from 'src/components/iconify';
 import { getOrderDetails } from 'src/services/apiService';
@@ -47,7 +48,7 @@ const OrderTrackingView = () => {
   const [orderDetails, setOrderDetails] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const navigate = useNavigate();
+  const navigate = useShopNavigate();
 
   useEffect(() => {
     const fetchOrderDetails = async () => {

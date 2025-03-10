@@ -1,8 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Container, Grid, Typography, Box, Link } from '@mui/material';
+import useShopNavigate  from 'src/hooks/use-shop-navigate';
+
 
 export default function Footer({businessDetails, headerLoading}) {
+  const navigate = useShopNavigate();
+
   return (
     <Box sx={{ backgroundColor: '#fff', py: 4 }}>
       <Container maxWidth="lg">
@@ -38,7 +42,10 @@ export default function Footer({businessDetails, headerLoading}) {
             </Typography>
 
             <Link
-              href="/track-order"
+              onClick={() => navigate("/track-order")}
+              sx={{
+                cursor: 'pointer',
+              }}
               variant="body2"
               color="text.secondary"
               underline="none"

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useCart  } from 'src/context/CartContext';
+import useShopNavigate  from 'src/hooks/use-shop-navigate';
 import PropTypes from 'prop-types';
 import Box from '@mui/material/Box';
 import Badge from '@mui/material/Badge';
@@ -21,7 +21,7 @@ export default function Header({ onOpenNav, businessDetails, headerLoading }) {
   const theme = useTheme();
   const lgUp = useResponsive('up', 'lg');
   const [openLoginDialog, setOpenLoginDialog] = useState(false);
-  const navigate = useNavigate();
+  const navigate = useShopNavigate();
 
   const handleOpenLoginDialog = () => {
     const token = localStorage.getItem('token');

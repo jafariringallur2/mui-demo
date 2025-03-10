@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import useShopNavigate  from 'src/hooks/use-shop-navigate';
 import {
   Container,
   Typography,
@@ -45,7 +45,7 @@ const getStatusBadge = (status) => {
 };
 
 const AccountView = () => {
-  const navigate = useNavigate();
+  const navigate = useShopNavigate();
   const [selectedTab, setSelectedTab] = useState(0);
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -88,7 +88,7 @@ const AccountView = () => {
   };
 
   const handleOrderClick = (orderId) => {
-    window.open(`/order/${orderId}`, '_blank');
+    navigate(`/order/${orderId}`,true);
   };
 
   const renderTabContent = () => {

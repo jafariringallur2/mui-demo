@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import useShopNavigate  from 'src/hooks/use-shop-navigate';
 import { Card, TextField, Button, Box, Typography, CircularProgress } from '@mui/material';
 import { Helmet } from 'react-helmet-async';
 import useHeaderData from 'src/hooks/useHeaderData';
@@ -10,7 +10,7 @@ import useHeaderData from 'src/hooks/useHeaderData';
 const TrackOrderView = () => {
   const [orderId, setOrderId] = useState('');
   const { headerData, headerLoading } = useHeaderData();
-  const navigate = useNavigate();
+  const navigate = useShopNavigate();
 
   const { businessInfo } = headerData || {};
 
@@ -58,14 +58,12 @@ const TrackOrderView = () => {
   
         {
           businessInfo?.business_logo && (
-            <Box sx={{ mb: 4 }}>
-            <Link to="/"> 
+            <Box sx={{ mb: 4 }}  onClick={() => navigate('/')}>
               <img
                 src={businessInfo.business_logo}
                 alt="Company Logo"
                 style={{ width: '150px', height: 'auto', cursor: 'pointer' }}
               />
-            </Link>
           </Box>
           )
           }
