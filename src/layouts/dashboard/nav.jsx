@@ -5,7 +5,6 @@ import BottomNavigation from '@mui/material/BottomNavigation';
 import BottomNavigationAction from '@mui/material/BottomNavigationAction';
 import Badge from '@mui/material/Badge';
 import { usePathname } from 'src/routes/hooks';
-import { RouterLink } from 'src/routes/components';
 import { useResponsive } from 'src/hooks/use-responsive';
 import useShopNavigate  from 'src/hooks/use-shop-navigate';
 import { useCart  } from 'src/context/CartContext';
@@ -38,6 +37,12 @@ export default function Nav({ openNav, onCloseNav }) {
       } else {
         setDialogOpen(true); 
       }
+    }else if(newValue === 0){
+        navigate('/');
+    }else if(newValue === 1){
+        navigate('/categories');
+    }else if(newValue === 2){
+        navigate('/cart');
     }
   };
 
@@ -55,8 +60,6 @@ export default function Nav({ openNav, onCloseNav }) {
       {navConfig.map((item) => (
         <BottomNavigationAction
           key={item.title}
-          component={item.title === 'account' ? undefined : RouterLink}
-          href={item.title === 'account' ? undefined : item.path}
           label={item.title}
           icon={
             item.title === 'cart' ? (

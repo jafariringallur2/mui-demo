@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Container, Grid, Typography, Box, Link } from '@mui/material';
+import Iconify from 'src/components/iconify';
 import useShopNavigate  from 'src/hooks/use-shop-navigate';
 
 
@@ -71,6 +72,32 @@ export default function Footer({businessDetails, headerLoading}) {
             <Typography variant="body2" color="text.secondary">
               Phone: {businessDetails.business_phone}
             </Typography>
+            <Box sx={{ display: 'flex', gap: 2, mt: 1 }}>
+
+              
+              {businessDetails.instagram_profile && (
+                <Link
+                  href={businessDetails.instagram_profile}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  color="inherit"
+                >
+                  <Iconify icon="bi:instagram" width={18} height={18} />
+                </Link>
+              )}
+
+              {businessDetails.facebook_profile && (
+                <Link
+                  href={businessDetails.facebook_profile}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  color="inherit"
+                >
+                  <Iconify icon="bi:facebook" width={18} height={18} />
+                </Link>
+              )}
+
+            </Box>
           </Grid>
           
           <Grid item xs={12}>

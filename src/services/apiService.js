@@ -21,6 +21,7 @@ const updateCacheIfNeeded = (versions) => {
     const cached = getCachedData(business_key);
     if (cached && cached.version !== versions[key]) {
       localStorage.removeItem(business_key);
+      fetchWithCache(key);
     }
   });
 };
@@ -51,12 +52,21 @@ const getAuthHeaders = () => {
   };
 };
 
-const fetchWithCache = async (key, url) => {
+const fetchWithCache = async (key) => {
   const business_key = `${getLatestBusinessUrl()}-${key}`;
   const cached = getCachedData(business_key);
   if (cached) {
    return cached.data;
   }
+  const apiEndpoints = {
+    'headerData' : 'header',
+    'sliderData' : 'sliders',
+    'categoryData' : 'categories',
+  };
+  if(!apiEndpoints[key]){
+    return [];
+  }
+  const url = `${BASE_URL}/${apiEndpoints[key]}`;
   try {
     const response = await fetch(url, {
       method: 'GET',
@@ -76,9 +86,9 @@ const fetchWithCache = async (key, url) => {
   }
 };
 
-export const getHeaderAPI = () => fetchWithCache('headerData', `${BASE_URL}/header`);
-export const getSliders = () => fetchWithCache('sliderData', `${BASE_URL}/sliders`);
-export const getCategories = () => fetchWithCache('categoryData', `${BASE_URL}/categories`);
+export const getHeaderAPI = () => fetchWithCache('headerData');
+export const getSliders = () => fetchWithCache('sliderData');
+export const getCategories = () => fetchWithCache('categoryData');
 
 
   export const getProducts = (limit = 8, category = null,page = 1,search=false) => {

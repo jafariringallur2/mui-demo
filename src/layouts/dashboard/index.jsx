@@ -8,6 +8,7 @@ import Nav from './nav';
 import Main from './main';
 import Header from './header';
 import Footer from './footer';
+import FloatingWhatsAppButton from './FloatingWhatsAppButton';
 
 // ----------------------------------------------------------------------
 
@@ -52,6 +53,7 @@ export default function DashboardLayout({ children }) {
       </Box>
 
       <Footer businessDetails={businessInfo} headerLoading={headerLoading} />
+      <FloatingWhatsAppButton businessDetails={businessInfo} headerLoading={headerLoading} />
     </>
   );
 }
