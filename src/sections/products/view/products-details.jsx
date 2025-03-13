@@ -20,9 +20,11 @@ import { fCurrency } from 'src/utils/format-number';
 import { useCart } from 'src/context/CartContext';
 import { getProductDetails} from 'src/services/apiService';
 import useHeaderData from 'src/hooks/useHeaderData'; 
+import useShopNavigate  from 'src/hooks/use-shop-navigate';
 import EmptyProduct from '../EmptyProduct';
 
 const ProductDetails = () => {
+  const navigate = useShopNavigate();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [loadingCart, setLoadingCart] = useState(false);
@@ -250,7 +252,7 @@ const ProductDetails = () => {
     setLoadingBuy(true);
     try {
       await addToCart(product.hashid, quantity, selectedVariant?.id);
-      window.location.href = '/cart';
+      navigate('/cart');
     } catch (error) {
       console.error('Failed to add product to cart:', error);
     } finally {

@@ -58,10 +58,7 @@ export default function Searchbar() {
       const params = new URLSearchParams(location.search);
       params.set('search', searchValue);
 
-      navigate({
-        pathname: '/products',
-        search: params.toString(),
-      });
+      navigate('/products',false,params.toString())
     }
   };
 

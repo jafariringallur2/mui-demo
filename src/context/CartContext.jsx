@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { createContext, useState, useContext, useEffect, useMemo, useCallback } from 'react';
 import { addToCart as addToCartAPI, getCartCount as getCartCountAPI , removeCartItem as removeCartItemAPI} from 'src/services/apiService';
+import useGA4 from 'src/hooks/useGA4';
 
 // Create a context for the cart
 const CartContext = createContext();
@@ -9,7 +10,7 @@ const CartContext = createContext();
 export const CartProvider = ({ children }) => {
   const [cartCount, setCartCount] = useState(0);
   const [cartLoading, setLoading] = useState(false);
-
+  const { sendEvent } = useGA4();
   // Fetch cart count from the backend
   const fetchCartCount = useCallback(async () => {
     setLoading(true);
@@ -28,6 +29,7 @@ export const CartProvider = ({ children }) => {
     setLoading(true);
     try {
       await addToCartAPI(id,quantity,variant);
+      sendEvent('Product', 'add_to_cart', id, variant);
       // Optionally, refetch cart count after adding an item
       await fetchCartCount();
     } catch (error) {
@@ -35,7 +37,7 @@ export const CartProvider = ({ children }) => {
     } finally {
       setLoading(false);
     }
-  }, [fetchCartCount]);
+  }, [fetchCartCount,sendEvent]);
 
   // Add item to the cart
   const removeCartItem = useCallback(async (id,) => {

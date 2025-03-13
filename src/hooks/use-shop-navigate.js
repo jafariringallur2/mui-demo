@@ -5,20 +5,34 @@ const useShopNavigate = () => {
   const navigate = useNavigate();
   const { shopUsername } = useParams();
 
-  const shopNavigate = (path, new_tab = false) => {
+  const shopNavigate = (path, new_tab = false,param=null) => {
     if (!isCustomDomain && shopUsername) {
       const url = `/${shopUsername}${path}`;
       if (new_tab) {
         window.open(url, '_blank');
         return;
       }
-      navigate(url);
+      if(param == null){
+        navigate(url);
+      }else{
+        navigate({
+          pathname: url,
+          search: param,
+        });
+      }
     } else {
       if (new_tab) {
         window.open(path, '_blank');
         return;
       }
-      navigate(path);
+      if(param == null){
+        navigate(path);
+      }else{
+        navigate({
+          pathname: path,
+          search: param,
+        });
+      }
     }
   };
   
