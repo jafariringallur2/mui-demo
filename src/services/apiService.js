@@ -107,8 +107,8 @@ export const getCategories = () => fetchWithCache('categoryData');
     }).then(handleResponse);
   };
 
-export const getProductDetails = (id) =>
-  fetch(`${BASE_URL}/product/${id}`, {
+export const getProductDetails = (slug) =>
+  fetch(`${BASE_URL}/product-slug/${slug}`, {
     method: 'GET',
     headers: {
       Accept: 'application/json',

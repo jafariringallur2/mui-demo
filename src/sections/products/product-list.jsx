@@ -32,6 +32,7 @@ export default function ProductList({ limit, category, source }) {
           ...prevProducts,
           ...data.data.map((product) => ({
             id: product.id,
+            slug: product.slug,
             name: product.name,
             image: product.image1,
             originalPrice: parseFloat(product.original_price),

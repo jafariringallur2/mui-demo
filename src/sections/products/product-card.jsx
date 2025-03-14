@@ -38,13 +38,13 @@ export default function ProductCard({ product }) {
     setSnackbarOpen(false);
   };
 
-  const navigateProductView = (id) => {
-    navigate(`/product/${id}`);
+  const navigateProductView = (slug) => {
+    navigate(`/product/${slug}`);
   }
 
   const renderImg = (
     <Box
-      onClick={() => navigateProductView(product.id)}
+      onClick={() => navigateProductView(product.slug)}
       sx={{
         top: 0,
         width: 1,
@@ -94,7 +94,7 @@ export default function ProductCard({ product }) {
           variant="body2"
           fontSize={16}
           fontWeight="bold"
-          onClick={() => navigateProductView(product.id)}
+          onClick={() => navigateProductView(product.slug)}
           sx={{
             cursor: 'pointer',
           }}
@@ -161,6 +161,7 @@ export default function ProductCard({ product }) {
 ProductCard.propTypes = {
   product: PropTypes.shape({
     id: PropTypes.string.isRequired,
+    slug: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
     image: PropTypes.string.isRequired,
     originalPrice: PropTypes.number.isRequired,

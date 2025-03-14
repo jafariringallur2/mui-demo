@@ -19,7 +19,6 @@ import { styled } from '@mui/material/styles';
 import { fCurrency } from 'src/utils/format-number';
 import { useCart } from 'src/context/CartContext';
 import { getProductDetails} from 'src/services/apiService';
-import useHeaderData from 'src/hooks/useHeaderData'; 
 import useShopNavigate  from 'src/hooks/use-shop-navigate';
 import EmptyProduct from '../EmptyProduct';
 
@@ -39,38 +38,59 @@ const ProductDetails = () => {
   const isDesktop = useMediaQuery((theme) => theme.breakpoints.up('lg'));
   const { addToCart } = useCart();
   const { id } = useParams();
-  const { headerData } = useHeaderData();
-  const { businessInfo } = headerData || {};
 
   useEffect(() => {
-    if (product) {
-
-      let businessname = '';
-      if(businessInfo){
-        businessname = businessInfo.business_name;
+    const fetchMetaData = async (slug) => {
+      if (!slug) {
+        console.error('No product ID provided');
+        return;
       }
-      document.title = `${product.name} | ${businessname}`;
-
-      const metaDescription = document.querySelector('meta[name="description"]');
-      if (metaDescription) {
-        metaDescription.setAttribute('content', product.product_description);
+  
+      try {
+        const GIST_ID = import.meta.env.VITE_GIST_ID;
+        const response = await fetch(`https://gist.githubusercontent.com/botiredigitalsolutions/${GIST_ID}/raw/${slug}.json`);
+        const data = await response.json();
+  
+        if (data) {
+          const { name, description, image } = data;
+  
+          // Set the document title
+          document.title = name;
+  
+          // Set the meta description
+          const metaDescription = document.querySelector('meta[name="description"]');
+          if (metaDescription) {
+            metaDescription.setAttribute('content', description || 'No description available');
+          }
+  
+          // Set Open Graph meta tags
+          const ogTitle = document.querySelector('meta[property="og:title"]');
+          const ogDescription = document.querySelector('meta[property="og:description"]');
+          const ogImage = document.querySelector('meta[property="og:image"]');
+  
+          if (ogTitle) {
+            ogTitle.setAttribute('content', name);
+          }
+          if (ogDescription) {
+            ogDescription.setAttribute('content', description || 'No description available');
+          }
+          if (ogImage && image) {
+            ogImage.setAttribute('content', image);
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching product meta data:", error);
       }
-
-      const ogTitle = document.querySelector('meta[property="og:title"]');
-      const ogDescription = document.querySelector('meta[property="og:description"]');
-      const ogImage = document.querySelector('meta[property="og:image"]');
-
-      if (ogTitle) {
-        ogTitle.setAttribute('content', product.name);
-      }
-      if (ogDescription) {
-        ogDescription.setAttribute('content', product.product_description);
-      }
-      if (ogImage && productImages.length > 0) {
-        ogImage.setAttribute('content', productImages[0]);
-      }
+    };
+  
+    // Only call the fetch function if `id` is available
+    if (id) {
+      fetchMetaData(id);
     }
-  }, [product, productImages, businessInfo]);
+  
+  }, [id]);
+  
+
 
   useEffect(() => {
     const fetchProductDetails = async () => {

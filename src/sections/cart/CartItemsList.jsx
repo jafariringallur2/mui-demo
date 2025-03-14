@@ -106,8 +106,8 @@ export default function CartItemsList({
     }
   };
 
-  const navigateProductView = (id) => {
-    navigate(`/product/${id}`);
+  const navigateProductView = (slug) => {
+    navigate(`/product/${slug}`);
   }
 
   return (
@@ -167,7 +167,7 @@ export default function CartItemsList({
           </Box>
             <Box display="flex" alignItems="center" sx={{ flex: 1 }}>
               <Box
-                onClick={() => navigateProductView(item.product.id)}
+                onClick={() => navigateProductView(item.product.slug)}
                 sx={{
                   margin:{'sm' : 2,'xs' : 0},
                   marginRight: {'sm' : 2,'xs' : 3},
@@ -191,7 +191,7 @@ export default function CartItemsList({
 
               <Box sx={{ flex: 1 }}>
                 <MuiLink
-                   onClick={() => navigateProductView(item.product.id)}
+                   onClick={() => navigateProductView(item.product.slug)}
                    sx={{
                      cursor: 'pointer',
                    }}
